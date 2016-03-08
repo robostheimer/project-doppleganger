@@ -1,7 +1,13 @@
 // app/routes.js
 
 var Todo = require('./models/todo');
-
+var Yelp = require("yelp");
+var yelp = new Yelp({
+  consumer_key: 'grFTF3Rp5lm-RlkHQ_WbHw',
+  consumer_secret: 'R4owE3xsHMrtu4jewQ9nQ9LDiQI',
+  token: 'viwvax3IRWW935j8jSXgcVlfezsHqZUV',
+  token_secret: 'uHb3OUy_5XfC71gjTO6Mk6swTMA',
+});
 function getTodos(res){
     Todo.find(function(err, todos) {
 
@@ -84,6 +90,28 @@ module.exports = function(app, passport) {
         });
     });
 
+
+    // =====================================
+    // YELP API==============================
+    // =====================================
+
+     app.get('/api/yelp/search', function(req, res) {
+    // grab data from yelp{
+        //yelp.search({category_filter: 'bars', location: 'Washington, DC', limit:10}, function(error, activityData) {
+        yelp.search({ term: 'the raven bar', location: 'Washington, DC', limit: 10})
+         .then(function (data) {
+           res.json(data)
+         });
+        // });
+    });
+
+     app.get('/api/yelp/business', function(req, res){
+        yelp.business('the-raven-grill-washington')
+          .then(function(data){
+            res.json(data);
+          })
+     })
+
     // =====================================
     // TODOS API==============================
     // =====================================
@@ -93,6 +121,8 @@ module.exports = function(app, passport) {
         // use mongoose to get all todos in the database
         getTodos(res);
     });
+
+    
 
     // create todo and send back all todos after creation
     app.post('/api/todos', function(req, res) {

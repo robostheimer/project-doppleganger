@@ -16,6 +16,8 @@ var session      = require('express-session');
 
 var configDB = require('./config/database.js');
 var methodOverride = require('method-override');
+var Yelp = require('yelp');
+
 
 
 // configuration ===============================================================
@@ -50,3 +52,17 @@ require('./app/routes.js')(app, passport); // load our routes and pass in our ap
 // launch ======================================================================
 app.listen(port);
 console.log('The magic happens on port ' + port);
+
+// var yelp = new Yelp({
+//   consumer_key: 'grFTF3Rp5lm-RlkHQ_WbHw',
+//   consumer_secret: 'R4owE3xsHMrtu4jewQ9nQ9LDiQI',
+//   token: 'viwvax3IRWW935j8jSXgcVlfezsHqZUV',
+//   token_secret: 'uHb3OUy_5XfC71gjTO6Mk6swTMA',
+// });
+// yelp.search({ term: 'bars', location: 'Washington, DC' })
+// 	.then(function (data) {
+// 	  console.log(data);
+// 	})
+// 	.catch(function (err) {
+// 	  console.error(err);
+// 	});
