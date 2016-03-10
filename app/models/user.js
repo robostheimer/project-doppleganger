@@ -8,7 +8,7 @@ var userSchema = mongoose.Schema({
 
     local            : {
         email        : String,
-        password     : String,
+        password     : String
     },
     facebook         : {
         id           : String,
@@ -27,7 +27,8 @@ var userSchema = mongoose.Schema({
         token        : String,
         email        : String,
         name         : String
-    }
+    },
+    lookingfor       : ['test'] // typeahead with people tying in items in the yelp_categories.json; too many for a checkbox or <select>
 
 });
 

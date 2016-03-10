@@ -96,17 +96,24 @@ module.exports = function(app, passport) {
     // =====================================
 
      app.get('/api/yelp/search', function(req, res) {
-    // grab data from yelp{
-        //yelp.search({category_filter: 'bars', location: 'Washington, DC', limit:10}, function(error, activityData) {
-        yelp.search({ term: 'the raven bar', location: 'Washington, DC', limit: 10})
+        console.log(req.query.term, req.query.ll)
+        if(req.query.ll!=undefined) {
+        yelp.search({ term: req.query.term, ll: req.query.ll})
          .then(function (data) {
            res.json(data)
          });
+        } else {
+        yelp.search({ term: req.query.term, location: req.query.location})
+         .then(function (data) {
+           res.json(data)
+         });
+
+        }
         // });
     });
 
      app.get('/api/yelp/business', function(req, res){
-        yelp.business('the-raven-grill-washington')
+        yelp.business(req.query.name)
           .then(function(data){
             res.json(data);
           })

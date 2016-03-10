@@ -58,17 +58,35 @@
         </div>
 
         <!-- FORM TO CREATE TODOS -->
-        <div id="todo-form" class="row">
+        <div id="place-based-form" class="row">
             <div class="col-sm-8 col-sm-offset-2 text-center">
+            Place-Based Search
                 <form>
                     <div class="form-group">
 
                         <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
-                        <input type="text" class="form-control input-lg text-center" placeholder="I want to buy a puppy that will love me forever" ng-model="formData.text">
+                        <input type="text" class="form-control input-lg text-center" placeholder="Place you like, city" ng-model="formData.text">
+                        <input type="text" class="form-control input-lg text-center" placeholder="Destination City or Geolocation" ng-model="">
                     </div>
 
                     <!-- createToDo() WILL CREATE NEW TODOS -->
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Add</button>
+                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Search</button>
+                </form>
+            </div>
+        </div>
+
+         <div id="keyword-based-form" class="row">
+            <div class="col-sm-8 col-sm-offset-2 text-center">
+            Keyword-Based Search
+                <form>
+                    <div class="form-group">
+
+                        <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
+                        <input type="text" class="form-control input-lg text-center" placeholder="What You Like" ng-model="">
+                        <input type="text" class="form-control input-lg text-center" placeholder="Where (Close to me or in another place" ng-model="">
+                    </div>
+                    <!-- createToDo() WILL CREATE NEW TODOS -->
+                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Search</button>
                 </form>
             </div>
         </div>
