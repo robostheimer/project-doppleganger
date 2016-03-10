@@ -98,12 +98,12 @@ module.exports = function(app, passport) {
      app.get('/api/yelp/search', function(req, res) {
         console.log(req.query.term, req.query.ll)
         if(req.query.ll!=undefined) {
-        yelp.search({ term: req.query.term, ll: req.query.ll})
+        yelp.search({ term: req.query.term, ll: req.query.ll, limit: req.query.limit})
          .then(function (data) {
            res.json(data)
          });
         } else {
-        yelp.search({ term: req.query.term, location: req.query.location})
+        yelp.search({ term: req.query.term, location: req.query.location, limit: req.query.limit})
          .then(function (data) {
            res.json(data)
          });

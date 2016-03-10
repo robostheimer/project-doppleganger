@@ -28,13 +28,12 @@
 
 </head>
 <!-- SET THE CONTROLLER -->
-<body ng-controller="mainController">
+<body ng-controller="getYelpResults">
     <div class="container">
-
 
         <!-- HEADER AND TODO COUNT -->
         <div class="jumbotron text-center">
-            <h1>I'm a Todo-aholic <span class="label label-info">{{ todos.length }}</span></h1>
+            <h1>Do<i>pp</i>le</h1>
         </div>
 
         <!-- TODO LIST -->
@@ -58,23 +57,31 @@
         </div>
 
         <!-- FORM TO CREATE TODOS -->
-        <div id="place-based-form" class="row">
+
+        <div id="keyword-based-form" class="row">
             <div class="col-sm-8 col-sm-offset-2 text-center">
-            Place-Based Search
+            Keyword-Based Search
                 <form>
                     <div class="form-group">
 
                         <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
-                        <input type="text" class="form-control input-lg text-center" placeholder="Place you like, city" ng-model="formData.text">
-                        <input type="text" class="form-control input-lg text-center" placeholder="Destination City or Geolocation" ng-model="">
+                        <input type="text" class="form-control input-lg text-center" placeholder="Place You like" ng-model="placeyoulike" >
+                        <input type="text" class="form-control input-lg text-center" placeholder="City of place you like" ng-model="city" >
+                        <input type="text" class="form-control input-lg text-center" placeholder="City you are going to.." ng-model="destination" >
                     </div>
-
                     <!-- createToDo() WILL CREATE NEW TODOS -->
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Search</button>
+                    <button type="submit" class="btn btn-primary btn-lg" ng-click="runBusinessSearch(placeyoulike,city, destination)">Search</button>
                 </form>
             </div>
         </div>
-
+        <div ng-repeat="item in placesyoulike_results">
+            <a href="{{item.url}}" target="_blank">{{item.name}}</a>
+            <br>{{item.location.address[0]}}
+            <br>{{item.location.city}}
+            <br>
+            <br>
+        </div>
+    
          <div id="keyword-based-form" class="row">
             <div class="col-sm-8 col-sm-offset-2 text-center">
             Keyword-Based Search
@@ -82,14 +89,23 @@
                     <div class="form-group">
 
                         <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
-                        <input type="text" class="form-control input-lg text-center" placeholder="What You Like" ng-model="">
-                        <input type="text" class="form-control input-lg text-center" placeholder="Where (Close to me or in another place" ng-model="">
+                        <input type="text" class="form-control input-lg text-center" placeholder="What You Like" ng-model="searchterms" >
+                        <input type="text" class="form-control input-lg text-center" placeholder="Where (Close to me or in another place" ng-model="location" >
                     </div>
                     <!-- createToDo() WILL CREATE NEW TODOS -->
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Search</button>
+                    <button type="submit" class="btn btn-primary btn-lg" ng-click="runSearch(searchterms,location)">Search</button>
                 </form>
             </div>
         </div>
+         <div ng-repeat="item in keyword_results">
+            <a href="{{item.url}}" target="_blank">{{item.name}}</a>
+            <br>{{item.location.address[0]}}
+            <br>{{item.location.city}}
+            <br>
+            <br>
+        </div>
+
+
 
         <div class="text-center text-muted">
             <p>A demo by <a href="http://scotch.io">Scotch</a>.</p>
