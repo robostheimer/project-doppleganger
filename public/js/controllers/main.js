@@ -80,9 +80,13 @@ angular.module('todoController', [])
 		SearchYelp.searchYelp(searchterms, location).then(function(result){
 		 		var id =result.businesses[0].id
 		 		SearchYelp.searchYelpBusiness(id).then(function(data){
-		 			var searchterms = data.categories[0][0];
-		 			console.log(searchterms, destination)
-		 			SearchYelp.searchYelp(searchterms, destination).then(function(moredata){
+		 			var length = data.categories[0].length;
+		 			var categoriesStr = ''
+		 			data.categories.forEach(function(item) {
+		 				categoriesStr+= item[0]+' '
+		 			})
+		 			console.log(categoriesStr, destination)
+		 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata){
 		 				$scope.placesyoulike_results = moredata.businesses;
 		 				console.log($scope.placesyoulike_results)
 		 			});
