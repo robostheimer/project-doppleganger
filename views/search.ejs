@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
 
-    <title>Node/Angular Todo App</title>
+    <title>Doppleganger: Find Your Hometown Services Anywhere</title>
 
     <!-- SCROLLS -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
@@ -17,6 +17,10 @@
         body                    { padding-top:50px; }
         #todo-list              { margin-bottom:30px; }
         #todo-form              { margin-bottom:50px; }
+        .jumbotron              { background: none; }
+        button                  {width: 300px; margin: 15px;}
+        .rows                   { width: 33%; display: inline-block; }
+        input                   { margin: 10px }
     </style>
 
     <!-- SPELLS -->
@@ -35,30 +39,11 @@
         <div class="jumbotron text-center">
             <img src="../images/Logo_sm.png" alt="doppleganger logo"/>
         </div>
-
-        <!-- TODO LIST -->
-        <div id="todo-list" class="row">
-            <div class="col-sm-4 col-sm-offset-4">
-
-                
-
-                <!-- LOOP OVER THE TODOS IN $scope.todos -->
-                <div class="checkbox" ng-repeat="todo in todos">
-                    <label>
-                        <input type="checkbox" ng-click="deleteTodo(todo._id)"> {{ todo.text }}
-                    </label>
-                </div>
-
-                <p class="text-center" ng-show="loading">
-                    <span class="fa fa-spinner fa-spin fa-3x"></span>
-                </p>
-
-            </div>
+        <div class="text-center col-sm-8 col-sm-offset-2">
+            <button class="btn btn-primary btn-lg" ng-click="showKeywords()">Find Your Place Some Place Else</button>
+            <button class="btn btn-primary btn-lg" ng-click="showPlaces()">I'm Here, Now What?</button>
         </div>
-
-        <!-- FORM TO CREATE TODOS -->
-
-        <div id="keyword-based-form" class="row">
+        <div id="keyword-based-form" class="row" ng-hide="places==false">
             <div class="col-sm-8 col-sm-offset-2 text-center">
             Keyword-Based Search
                 <form>
@@ -74,7 +59,8 @@
                 </form>
             </div>
         </div>
-        <div ng-repeat="item in placesyoulike_results">
+        <br><br>
+        <div ng-repeat="item in placesyoulike_results" class="rows" ng-hide="places==false">
             <a href="{{item.url}}" target="_blank">{{item.name}}</a>
             <br>{{item.location.address[0]}}
             <br>{{item.location.city}}
@@ -82,7 +68,7 @@
             <br>
         </div>
     
-         <div id="keyword-based-form" class="row">
+         <div id="keyword-based-form" class="row" ng-hide="keywords==false"  >
             <div class="col-sm-8 col-sm-offset-2 text-center">
             Keyword-Based Search
                 <form>
@@ -97,7 +83,8 @@
                 </form>
             </div>
         </div>
-         <div ng-repeat="item in keyword_results">
+        <br><br>
+         <div ng-repeat="item in keyword_results" class="rows" ng-hide="keywords==false" >
             <a href="{{item.url}}" target="_blank">{{item.name}}</a>
             <br>{{item.location.address[0]}}
             <br>{{item.location.city}}

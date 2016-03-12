@@ -70,6 +70,10 @@ angular.module('todoController', [])
 
 
 .controller('getYelpResults', ['$scope','$http','SearchYelp', function($scope, $http, SearchYelp) {	 
+
+	$scope.places = false;
+	$scope.keywords = false;
+
 	$scope.runSearch = function(searchterms, location) {
 		SearchYelp.searchYelp(searchterms, location).then(function(result){
 		 		$scope.keyword_results =result.businesses; 
@@ -93,4 +97,15 @@ angular.module('todoController', [])
 		 		}); 
 		 });	
 	}
+	$scope.showKeywords = function() {
+		$scope.places = false;
+		$scope.keywords = true;
+
+	}
+
+	$scope.showPlaces = function() {
+			$scope.places = true;
+		$scope.keywords = false;
+	}
+
 }]);		

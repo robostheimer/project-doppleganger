@@ -40,7 +40,7 @@ module.exports = function(app, passport) {
 
     // process the login form
     app.post('/login', passport.authenticate('local-login', {
-        successRedirect : '/todo', // redirect to the secure profile section
+        successRedirect : '/search', // redirect to the secure profile section
         failureRedirect : '/login', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
     }));
@@ -84,8 +84,8 @@ module.exports = function(app, passport) {
     // =====================================
     // TODOS ==============================
     // =====================================
-    app.get('/todo', isLoggedIn, function(req, res) {
-        res.render('todo.ejs', {
+    app.get('/search', isLoggedIn, function(req, res) {
+        res.render('search.ejs', {
             user : req.user // get the user out of session and pass to template
         });
     });
