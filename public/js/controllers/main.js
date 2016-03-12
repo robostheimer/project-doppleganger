@@ -71,10 +71,10 @@ angular.module('todoController', [])
 
 .controller('getYelpResults', ['$scope','$http','SearchYelp', function($scope, $http, SearchYelp) {	 
 
-	$scope.places = false;
+	$scope.places = true;
 	$scope.keywords = false;
-	$scope.placesButtonState='';
-	$scope.keywordsButtonState='';
+	$scope.placesButtonState='off';
+	$scope.keywordsButtonState='on';
 
 
 	$scope.runSearch = function(searchterms, location) {

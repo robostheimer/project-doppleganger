@@ -57,12 +57,13 @@
           margin-right: 5px;
           margin-left: 5px;
         }
-        .place span {
+        .place .place-block {
           margin: 10px;
           margin-top: 5px;
           margin-bottom: 5px;
           display: block;
           border-right: 1px dotted #428bca;
+          display: inline;
         }
         .col-sm-8{
           float: none;
@@ -72,6 +73,11 @@
         }
         input {
           margin: 10px; 
+        }
+        .number {
+            font-size: 3rem;
+            display: inline;
+            color: #428bca;
         }
         @media screen and   (min-width:1601px)   {
             .rows {
@@ -235,11 +241,12 @@
         </div>
         <div class="rows">
             <div ng-repeat="item in placesyoulike_results" class="place" ng-hide="places==false">
-                <span>
+                <div class="number">{{$index+1}}</div>
+                <div class="place-block">
                     <a href="{{item.url}}" target="_blank">{{item.name}}</a>
                     <br>{{item.location.address[0]}}
                     <br>{{item.location.city}}
-                </span>
+                </div>
             </div>
         </div>
          <div id="keyword-based-form" class="row" ng-hide="keywords==false" >
@@ -258,11 +265,12 @@
         </div>
         <div class="rows">
              <div ng-repeat="item in keyword_results" class="place" ng-hide="keywords==false" >
-                <span>
+                <div class="number">{{$index+1}}</div>
+                <div class="place-block">
                     <a href="{{item.url}}" target="_blank">{{item.name}}</a>
                     <br>{{item.location.address[0]}}
                     <br>{{item.location.city}}
-                </span>
+                </div>
             </div>
         </div>    
 
