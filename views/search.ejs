@@ -13,14 +13,189 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <style>
-        html                    { overflow-y:scroll; }
-        body                    { padding-top:50px; }
-        #todo-list              { margin-bottom:30px; }
-        #todo-form              { margin-bottom:50px; }
-        .jumbotron              { background: none; }
-        button                  {width: 300px; margin: 15px;}
-        .rows                   { width: 33%; display: inline-block; }
-        input                   { margin: 10px }
+        html {
+          overflow-y:scroll; 
+        }
+        body {
+          padding-top:50px;
+        }
+        #todo-list { 
+          margin-bottom:30px;
+        }
+        #todo-form {
+          margin-bottom:50px; 
+        }
+        .jumbotron {
+          background: none;
+          padding-top: 20px;
+          padding-bottom: 20px;
+        }
+        .btn,.btn.off { 
+          width: 250px; 
+          margin: 10px; 
+          background-color: 
+          white; 
+          color: #428bca;
+          margin-bottom: 0;
+        }
+        .btn.on {
+            background-color: #428bca; 
+            color: white;
+        }
+        .rows { 
+          margin: auto;
+          display: block;
+          margin-top: 15px;
+        }
+        .place {
+          text-align: left;
+          display: inline-block;
+          padding-bottom: 0;
+          width: 20%;
+          box-sizing: border-box;
+          margin: auto;
+          margin-right: 5px;
+          margin-left: 5px;
+        }
+        .place span {
+          margin: 10px;
+          margin-top: 5px;
+          margin-bottom: 5px;
+          display: block;
+          border-right: 1px dotted #428bca;
+        }
+        .col-sm-8{
+          float: none;
+        }
+        .form-control {
+            width: 96%;
+        }
+        input {
+          margin: 10px; 
+        }
+        @media screen and   (min-width:1601px)   {
+            .rows {
+                width: 1600px;
+            }
+            .place { 
+              width: 320px;
+             }
+             .input-lg {
+                width: 75%;
+                margin-left: 12.5%;
+             }
+        }
+
+        @media screen and  (max-width: 1280px) and (min-width:1025px) {
+            .rows {
+                width: 1024px;
+            }
+            .place {
+                width: 204px;
+            }
+            .btn, .btn.on, .btn.off {
+              width: 40%;
+              box-sizing: border-box;
+              display: inline-block;
+              font-size: 1.75rem;
+              padding: 10px;
+              margin: 1%;
+              margin-right: 0;
+            }
+        }
+
+        @media screen and  (max-width: 1024px) and (min-width:768px) {
+             .rows {
+                width: 768px;
+             }
+             .place {
+                width: 192px;
+            }
+             .btn, .btn.on, .btn.off {
+              width: 48.5%;
+              box-sizing: border-box;
+              display: inline-block;
+              font-size: 1.75rem;
+              padding: 10px;
+              margin: 1%;
+              margin-right: 0;
+            }
+        }
+
+        @media screen and  (max-width: 767px) and (min-width:640px) {
+             .rows {
+                width: 640px;
+             }
+             .place {
+                width: 213px
+            }  
+             .btn, .btn.on, .btn.off {
+              width: 48.5%;
+              box-sizing: border-box;
+              display: inline-block;
+              font-size: 2rem;
+              padding: 10px;
+              margin: 1%;
+              margin-right: 0;
+            }
+            .jumbotron img {
+              width: 200px;
+              height: 91px;
+            }
+        }
+
+        @media screen and  (max-width: 639px ) and (min-width: 480px) {
+             .rows {
+                width: 480px;
+             }
+             .place {
+                width: 230px;
+            }
+            .btn, .btn.on, .btn.off {
+              width: 48.5%;
+              box-sizing: border-box;
+              display: inline-block;
+              font-size: 1.5rem ;
+              padding: 10px;
+              margin: 1%;
+              margin-right: 0;              
+            }
+            .jumbotron img {
+              width: 150px;
+              height: 68px;
+            }
+
+
+        }
+
+        @media screen and  (max-width: 479px )  {
+             .rows {
+                width: 240px;
+             }
+             .place {
+                width: 220px;
+            }
+            .input-lg {
+                font-size: 1.5rem;
+                height: 40px;
+            }
+            .btn, .btn.on, .btn.off {
+              width: 48%;
+              box-sizing: border-box;
+              display: inline-block;
+              font-size: 1.25rem;
+              padding: 10px;
+              margin: 1%;
+              margin-right: 0;
+            }
+            .jumbotron img {
+              width: 100px;
+              height: 45px;
+            }
+
+        
+        }
+
     </style>
 
     <!-- SPELLS -->
@@ -40,8 +215,8 @@
             <img src="../images/Logo_sm.png" alt="doppleganger logo"/>
         </div>
         <div class="text-center col-sm-8 col-sm-offset-2">
-            <button class="btn btn-primary btn-lg" ng-click="showKeywords()">Find Your Place Some Place Else</button>
-            <button class="btn btn-primary btn-lg" ng-click="showPlaces()">I'm Here, Now What?</button>
+            <button class="btn btn-primary btn-lg {{keywordsButtonState}}" ng-click="showKeywords()">Find Your Doppleganger</button>
+            <button class="btn btn-primary btn-lg {{placesButtonState}}" ng-click="showPlaces()">I'm Here, Now What?</button>
         </div>
         <div id="keyword-based-form" class="row" ng-hide="places==false">
             <div class="col-sm-8 col-sm-offset-2 text-center">
@@ -58,16 +233,16 @@
                 </form>
             </div>
         </div>
-        <br><br>
-        <div ng-repeat="item in placesyoulike_results" class="rows" ng-hide="places==false">
-            <a href="{{item.url}}" target="_blank">{{item.name}}</a>
-            <br>{{item.location.address[0]}}
-            <br>{{item.location.city}}
-            <br>
-            <br>
+        <div class="rows">
+            <div ng-repeat="item in placesyoulike_results" class="place" ng-hide="places==false">
+                <span>
+                    <a href="{{item.url}}" target="_blank">{{item.name}}</a>
+                    <br>{{item.location.address[0]}}
+                    <br>{{item.location.city}}
+                </span>
+            </div>
         </div>
-    
-         <div id="keyword-based-form" class="row" ng-hide="keywords==false"  >
+         <div id="keyword-based-form" class="row" ng-hide="keywords==false" >
             <div class="col-sm-8 col-sm-offset-2 text-center">
                 <form>
                     <div class="form-group">
@@ -81,23 +256,19 @@
                 </form>
             </div>
         </div>
-        <br><br>
-         <div ng-repeat="item in keyword_results" class="rows" ng-hide="keywords==false" >
-            <a href="{{item.url}}" target="_blank">{{item.name}}</a>
-            <br>{{item.location.address[0]}}
-            <br>{{item.location.city}}
-            <br>
-            <br>
-        </div>
+        <div class="rows">
+             <div ng-repeat="item in keyword_results" class="place" ng-hide="keywords==false" >
+                <span>
+                    <a href="{{item.url}}" target="_blank">{{item.name}}</a>
+                    <br>{{item.location.address[0]}}
+                    <br>{{item.location.city}}
+                </span>
+            </div>
+        </div>    
 
 
 
-        <div class="text-center text-muted">
-            <p>A demo by <a href="http://scotch.io">Scotch</a>.</p>
-            <p>Read the <a href="http://scotch.io/tutorials/javascript/creating-a-single-page-todo-app-with-node-and-angular">tutorial</a>.</p>
-            <p> <a href="logout">Logout</a></p>
-        </div>
-
+       
     </div>
 
 </body>

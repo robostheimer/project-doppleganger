@@ -55,7 +55,7 @@ angular.module('todoController', [])
 	function($http) {
 		return {
 			searchYelp: function(searchterms, location) {
-				return $http.get('/api/yelp/search/?term='+searchterms+'&location='+location+'&limit=20').then(function(result) {
+				return $http.get('/api/yelp/search/?term='+searchterms+'&location='+location+'&limit=10').then(function(result) {
 					return result.data;
 			});
 		},
@@ -73,6 +73,9 @@ angular.module('todoController', [])
 
 	$scope.places = false;
 	$scope.keywords = false;
+	$scope.placesButtonState='';
+	$scope.keywordsButtonState='';
+
 
 	$scope.runSearch = function(searchterms, location) {
 		SearchYelp.searchYelp(searchterms, location).then(function(result){
@@ -100,12 +103,16 @@ angular.module('todoController', [])
 	$scope.showKeywords = function() {
 		$scope.places = true;
 		$scope.keywords = false;
+		$scope.placesButtonState='off';
+		$scope.keywordsButtonState='on';
 
 	}
 
 	$scope.showPlaces = function() {
 		$scope.places = false;
 		$scope.keywords = true;
+		$scope.placesButtonState='on';
+		$scope.keywordsButtonState='off';
 	}
 
 }]);		
