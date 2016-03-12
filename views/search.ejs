@@ -51,7 +51,7 @@
                         <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
                         <input type="text" class="form-control input-lg text-center" placeholder="Place You like" ng-model="placeyoulike" >
                         <input type="text" class="form-control input-lg text-center" placeholder="City of place you like" ng-model="city" >
-                        <input type="text" class="form-control input-lg text-center" placeholder="City you are going to.." ng-model="destination" >
+                        <input type="text" class="form-control input-lg text-center" placeholder="Find the doppleganger in another city" ng-model="destination" >
                     </div>
                     <!-- createToDo() WILL CREATE NEW TODOS -->
                     <button type="submit" class="btn btn-primary btn-lg" ng-click="runBusinessSearch(placeyoulike,city, destination)">Search</button>
@@ -73,8 +73,8 @@
                     <div class="form-group">
 
                         <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
-                        <input type="text" class="form-control input-lg text-center" placeholder="What You Like" ng-model="searchterms" >
-                        <input type="text" class="form-control input-lg text-center" placeholder="Where (Close to me or in another place" ng-model="location" >
+                        <input type="text" class="form-control input-lg text-center" placeholder="What Are you looking for?" ng-model="searchterms" >
+                        <input type="text" class="form-control input-lg text-center" placeholder="Where are you?" ng-model="location" >
                     </div>
                     <!-- createToDo() WILL CREATE NEW TODOS -->
                     <button type="submit" class="btn btn-primary btn-lg" ng-click="runSearch(searchterms,location)">Search</button>
