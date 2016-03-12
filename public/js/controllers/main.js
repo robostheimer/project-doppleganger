@@ -98,14 +98,14 @@ angular.module('todoController', [])
 		 });	
 	}
 	$scope.showKeywords = function() {
-		$scope.places = false;
-		$scope.keywords = true;
+		$scope.places = true;
+		$scope.keywords = false;
 
 	}
 
 	$scope.showPlaces = function() {
-			$scope.places = true;
-		$scope.keywords = false;
+		$scope.places = false;
+		$scope.keywords = true;
 	}
 
 }]);		
