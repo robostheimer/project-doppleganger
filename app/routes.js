@@ -30,7 +30,7 @@ module.exports = function(app, passport) {
 
     //TODO add items to users profiles and add login
     app.get('/', function(req, res) {
-        res.render('index.ejs'); // load the index.ejs file
+        res.render('search.ejs'); // load the index.ejs file
     });
     
     // =====================================
@@ -45,7 +45,7 @@ module.exports = function(app, passport) {
 
     // process the login form
     app.post('/login', passport.authenticate('local-login', {
-        successRedirect : '/todo', // redirect to the secure profile section
+        successRedirect : '/search', // redirect to the secure profile section
         failureRedirect : '/login', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
     }));

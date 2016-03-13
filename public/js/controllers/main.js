@@ -1,5 +1,5 @@
 var Doppleganger = angular.module('Doppleganger', ['ngRoute']);
-angular.module('todoController', [])
+angular.module('Ganger', [])
 
 
 	// inject the Todo service factory into our controller

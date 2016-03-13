@@ -1,7 +1,7 @@
 <!doctype html>
 
 <!-- ASSIGN OUR ANGULAR MODULE -->
-<html ng-app="scotchTodo">
+<html ng-app="Doppleganger">
 <head>
     <!-- META -->
     <meta charset="utf-8">
@@ -56,13 +56,13 @@
           margin: auto;
           margin-right: 5px;
           margin-left: 5px;
+          margin-bottom: 10px
         }
         .place .place-block {
           margin: 10px;
           margin-top: 5px;
           margin-bottom: 5px;
           display: block;
-          border-right: 1px dotted #428bca;
           display: inline;
         }
         .col-sm-8{
@@ -198,7 +198,7 @@
               width: 48%;
               box-sizing: border-box;
               display: inline-block;
-              font-size: 1.25rem;
+              font-size: 1.15rem;
               padding: 10px;
               margin: 1%;
               margin-right: 0;
@@ -222,8 +222,8 @@
 
 </head>
 <!-- SET THE CONTROLLER -->
-<body ng-controller="getYelpResults">
-    <div class="container">
+<body>
+    <div class="container" ng-controller="getYelpResults">
 
         <!-- HEADER AND TODO COUNT -->
         <div class="jumbotron text-center">
@@ -287,6 +287,7 @@
         <footer>
             <p>From <a href="http://cityblinking.com">Big City Blinking</a></p>
             <p><a href="http://twitter.com/robostheimer">@robostheimer</a></p>
+            <p>Powered By <a href="https://www.yelp.com/developers" target="_blank">Yelp API</a></p>
         </footer>
     </div>
 
