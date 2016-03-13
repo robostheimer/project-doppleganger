@@ -80,12 +80,20 @@
             color: #428bca;
         }
         footer {
-            border-top: 1px solid #428bca;
+            position: absolute;
+            bottom: 2%;
+            width: 100%;
         }
         footer p {
           text-align: center;
           margin: 10px;
+          margin-bottom: 3px;
+          margin-top: 3px;
 
+        }
+        footer p:nth-of-type(1) {
+          border-top: 1px solid #428bca;
+          padding-top: 10px
         }
 
         @media screen and   (min-width:1601px)   {
@@ -284,12 +292,12 @@
             
         </div>    
 
-        <footer>
-            <p>From <a href="http://cityblinking.com">Big City Blinking</a></p>
-            <p><a href="http://twitter.com/robostheimer">@robostheimer</a></p>
-            <p>Powered By <a href="https://www.yelp.com/developers" target="_blank">Yelp API</a></p>
-        </footer>
+        
     </div>
-
+    <footer>
+         <p>From <a href="http://cityblinking.com">Big City Blinking</a></p>
+         <p><a href="http://twitter.com/robostheimer">@robostheimer</a></p>
+         <p>Powered By <a href="https://www.yelp.com/developers" target="_blank">Yelp API</a></p>
+    </footer>
 </body>
 </html>
