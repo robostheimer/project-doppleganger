@@ -20,6 +20,14 @@ function getTodos(res){
 };
 
 module.exports = function(app, passport) {
+    // =====================================
+    // CORS ================================
+    // =====================================
+    app.use(function(req, res, next) {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "X-Requested-With");
+      next();
+    });
 
     // =====================================
     // HOME PAGE (with login links) ========
@@ -87,7 +95,7 @@ module.exports = function(app, passport) {
     });
 
     // =====================================
-    // TODOS ==============================
+    // TODOS ===============================
     // =====================================
     app.get('/search', isLoggedIn, function(req, res) {
         res.render('search.ejs', {
@@ -97,7 +105,7 @@ module.exports = function(app, passport) {
 
 
     // =====================================
-    // YELP API==============================
+    // YELP API=============================
     // =====================================
 
      app.get('/api/yelp/search', function(req, res) {
