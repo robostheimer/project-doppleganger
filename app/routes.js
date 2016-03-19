@@ -109,7 +109,6 @@ module.exports = function(app, passport) {
     // =====================================
 
      app.get('/api/yelp/search', function(req, res) {
-        console.log(req.query.term, req.query.ll)
         if(req.query.ll!=undefined) {
         yelp.search({ term: req.query.term, ll: req.query.ll, limit: req.query.limit})
          .then(function (data) {

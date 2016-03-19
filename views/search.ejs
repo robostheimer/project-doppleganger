@@ -32,7 +32,7 @@
         </div>
         <div class="text-center col-sm-8 col-sm-offset-2">
             <button class="btn btn-primary btn-lg {{keywordsButtonState}}" ng-click="showKeywords()">Find Your Doppleganger</button>
-            <button class="btn btn-primary btn-lg {{placesButtonState}}" ng-click="showPlaces()">I'm Here, Now What?</button>
+            <button class="btn btn-primary btn-lg {{placesButtonState}}" ng-click="showPlaces()" >I'm Here, Now What?</button>
         </div>
         <div id="keyword-based-form" class="row" ng-hide="places==false">
             <div class="col-sm-8 col-sm-offset-2 text-center">
@@ -42,10 +42,10 @@
                         <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
                         <input type="text" class="form-control input-lg text-center" placeholder="Place You like" ng-model="placeyoulike" >
                         <input type="text" class="form-control input-lg text-center" placeholder="City of place you like" ng-model="city" >
-                        <input type="text" class="form-control input-lg text-center" placeholder="Find the doppleganger in another city" ng-model="destination" >
+                        <input type="text" class="form-control input-lg text-center" placeholder="Find the doppleganger in another city" ng-model="destination" ng-change="runBusinessSearch(placeyoulike,city, destination)">
                     </div>
                     <!-- createToDo() WILL CREATE NEW TODOS -->
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="runBusinessSearch(placeyoulike,city, destination)">Search</button>
+                    <!-- <button type="submit" class="btn btn-primary btn-lg" ng-click="runBusinessSearch(placeyoulike,city, destination)">Search</button> -->
                 </form>
             </div>
         </div>
@@ -66,10 +66,10 @@
 
                         <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
                         <input type="text" class="form-control input-lg text-center" placeholder="What Are you looking for?" ng-model="searchterms" >
-                        <input type="text" class="form-control input-lg text-center" placeholder="Where are you?" ng-model="location" >
+                        <input type="text" class="form-control input-lg text-center" placeholder="Where are you?" ng-model="location"  ng-change="runSearch(searchterms,location)">
                     </div>
                     <!-- createToDo() WILL CREATE NEW TODOS -->
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="runSearch(searchterms,location)">Search</button>
+                    <!-- <button type="submit" class="btn btn-primary btn-lg" ng-click="runSearch(searchterms,location)">Search</button> -->
                 </form>
             </div>
         </div>
