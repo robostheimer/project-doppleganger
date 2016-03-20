@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="css/doppleganger.css">
 
     <!-- SPELLS -->
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.2/angular.min.js"></script><!-- load angular -->
 
     <script src="js/controllers/main.js"></script> <!-- load up our controller -->
     <script src="js/services/todos.js"></script> <!-- load our todo service -->
@@ -42,7 +42,7 @@
                         <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
                         <input type="text" class="form-control input-lg text-center" placeholder="Place You like" ng-model="placeyoulike" >
                         <input type="text" class="form-control input-lg text-center" placeholder="City of place you like" ng-model="city" >
-                        <input type="text" class="form-control input-lg text-center" placeholder="Find the doppleganger in another city" ng-model="destination" ng-change="runBusinessSearch(placeyoulike,city, destination)">
+                        <input type="text" class="form-control input-lg text-center" placeholder="Find the doppleganger in another city" ng-model="destination" ng-change="runBusinessSearch(placeyoulike,city, destination)" ng-model-options="{debounce:500}">
                     </div>
                     <!-- createToDo() WILL CREATE NEW TODOS -->
                     <!-- <button type="submit" class="btn btn-primary btn-lg" ng-click="runBusinessSearch(placeyoulike,city, destination)">Search</button> -->
@@ -66,7 +66,7 @@
 
                         <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
                         <input type="text" class="form-control input-lg text-center" placeholder="What Are you looking for?" ng-model="searchterms" >
-                        <input type="text" class="form-control input-lg text-center" placeholder="Where are you?" ng-model="location"  ng-change="runSearch(searchterms,location)">
+                        <input type="text" class="form-control input-lg text-center" placeholder="Where are you?" ng-model="location"  ng-change="runSearch(searchterms,location)" ng-model-options="{debounce:500}">
                     </div>
                     <!-- createToDo() WILL CREATE NEW TODOS -->
                     <!-- <button type="submit" class="btn btn-primary btn-lg" ng-click="runSearch(searchterms,location)">Search</button> -->
