@@ -1,56 +1,6 @@
 var Doppleganger = angular.module('Doppleganger', ['ngRoute']);
 angular.module('Ganger', [])
 
-
-	// inject the Todo service factory into our controller
-	// .controller('mainController', ['$scope','$http','Todos', function($scope, $http, Todos) {
-	// 	$scope.formData = {};
-	// 	$scope.loading = true;
-
-	// 	// GET =====================================================================
-	// 	// when landing on the page, get all todos and show them
-	// 	// use the service to get all the todos
-	// 	Todos.get()
-	// 		.success(function(data) {
-	// 			$scope.todos = data;
-	// 			$scope.loading = false;
-	// 		});
-
-	// 	// CREATE ==================================================================
-	// 	// when submitting the add form, send the text to the node API
-	// 	$scope.createTodo = function() {
-
-	// 		// validate the formData to make sure that something is there
-	// 		// if form is empty, nothing will happen
-	// 		if ($scope.formData.text != undefined) {
-	// 			$scope.loading = true;
-
-	// 			// call the create function from our service (returns a promise object)
-	// 			Todos.create($scope.formData)
-
-	// 				// if successful creation, call our get function to get all the new todos
-	// 				.success(function(data) {
-	// 					$scope.loading = false;
-	// 					$scope.formData = {}; // clear the form so our user is ready to enter another
-	// 					$scope.todos = data; // assign our new list of todos
-	// 				});
-	// 		}
-	// 	};
-
-	// 	// DELETE ==================================================================
-	// 	// delete a todo after checking it
-	// 	$scope.deleteTodo = function(id) {
-	// 		$scope.loading = true;
-
-	// 		Todos.delete(id)
-	// 			// if successful creation, call our get function to get all the new todos
-	// 			.success(function(data) {
-	// 				$scope.loading = false;
-	// 				$scope.todos = data; // assign our new list of todos
-	// 			});
-	// 	};
-	// }])
-
 .factory('SearchYelp', ['$http', 
 	function($http) {
 		return {
@@ -112,8 +62,10 @@ function($http, $q, CityFind) {
 	$scope.keywordsButtonState ='on';
 	$scope.addTypeahead = true;
 	$scope.loading = true;
+	$scope.noBusinesses = false;
+	$scope.searching = false;
 	Geolocation.checkGeolocation().then(function(data){
-		if(data!==false)
+		if(data !== false)
 		{
 			$scope.geolocation = data.lat +', '+data.lon;
 			$scope.whereyouare = data.city+', '+data.state;
@@ -123,32 +75,59 @@ function($http, $q, CityFind) {
 		$scope.addTypeahead = false;
 		$scope.loading=false
 	});
+
 	$scope.runSearch = function(searchterms, location) {
-		if(searchterms!==undefined && location!==undefined)
+		$scope.keyword_results = [];
+		$scope.noBusinesses=false;
+
+		
+		if((searchterms !== undefined && searchterms !== "") && (location !== undefined && location !== ""))
 		{
-			$scope.keyword_results = [];
+			$scope.searching = true;
+
 			SearchYelp.searchYelp(searchterms, location).then(function(result){
+				if(result.businesses.length == 0)
+	 			{
+	 				$scope.noBusinesses=true;
+	 				$scope.searching = false;
+	 			}
+	 			else {
 			 	$scope.keyword_results =result.businesses; 
+			 	$scope.searching = false;
+				}
 			});
 		}
 	}
 	
 	$scope.runBusinessSearch = function(searchterms, location, destination) {
-		if(searchterms!==undefined && location!=undefined && destination!=undefined)
+		
+		$scope.placesyoulike_results = [];
+		$scope.noBusinesses=false
+		
+		
+		if((searchterms !== undefined && searchterms !== "") && (location !== undefined && location !== "")  && (destination !== undefined && destination !== ""))
 		{
-			$scope.placesyoulike_results = [];
+			$scope.searching = true;
+
 			SearchYelp.searchYelp(searchterms, location).then(function(result){
+	 		if(result.businesses.length == 0)
+	 			{
+	 				$scope.noBusinesses=true;
+	 				$scope.searching = false;
+	 			}
+	 			else {
 			 		var id =result.businesses[0].id
 			 		SearchYelp.searchYelpBusiness(id).then(function(data){
-			 			var length = data.categories[0].length;
-			 			var categoriesStr = ''
-			 			data.categories.forEach(function(item) {
-			 				categoriesStr+= item[0]+' '
-			 			})
-			 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata){
-			 				$scope.placesyoulike_results = moredata.businesses;
-			 			});
-			 		}); 
+				 			var categoriesStr = ''
+				 			data.categories.forEach(function(item) {
+				 				categoriesStr+= item[0]+' '
+				 			})
+				 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata){
+				 				$scope.placesyoulike_results = moredata.businesses;
+				 				$scope.searching = false;
+				 			});
+				 		});
+			 		} 
 			 });	
 		}
 	};
