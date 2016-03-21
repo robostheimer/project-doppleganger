@@ -34,21 +34,19 @@
             <button class="btn btn-primary btn-lg {{keywordsButtonState}}" ng-click="showKeywords()">Find Your Doppleganger</button>
             <button class="btn btn-primary btn-lg {{placesButtonState}}" ng-click="showPlaces()" >I'm Here, Now What?</button>
         </div>
-       
-        <div id="keyword-based-form" class="row" ng-hide="places==false" >
-          <div class="cssload-container" ng-show="loading==true">
+         <div class="cssload-container" ng-show="loading==true">
             <div class="cssload-whirlpool"></div>
-            </div>
-            <div class="col-sm-8 col-sm-offset-2 text-center" ng-show="loading==false">
+        </div>
+        <div ng-show="loading==false">
+        <div id="keyword-based-form" class="row" ng-hide="places==false" >
+            <div class="col-sm-8 col-sm-offset-2 text-center">
                 <form>
                     <div class="form-group">
-
                         <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
-                        <input type="text" class="form-control input-lg text-center" placeholder="Place You like" ng-model="placeyoulike" >
+                        <input type="text" class="form-control input-lg text-center" placeholder="Place You like" ng-model="placeyoulike" ng-change="runBusinessSearch(placeyoulike,city, whereyouare)" ng-model-options="{debounce:500}">
                         <input type="text" class="form-control input-lg text-center" placeholder="City of place you like" ng-model="city" ng-model-options="{debounce:500}" ng-change="runBusinessSearch(placeyoulike,city, whereyouare)" ng-model="city" ng-hide="addTypeahead==true">
                         <input type="text" class="form-control input-lg text-center" placeholder="City of place you like" ng-model="city" ng-hide="addTypeahead==false">
                         <input type="text" class="form-control input-lg text-center" placeholder="Find the doppleganger in another city" ng-model="whereyouare" ng-change="runBusinessSearch(placeyoulike,city, whereyouare)" ng-model-options="{debounce:500}" >
-
                     </div>
                     <!-- createToDo() WILL CREATE NEW TODOS -->
                     <!-- <button type="submit" class="btn btn-primary btn-lg" ng-click="runBusinessSearch(placeyoulike,city, destination)">Search</button> -->
@@ -69,7 +67,6 @@
             <div class="col-sm-8 col-sm-offset-2 text-center">
                 <form>
                     <div class="form-group">
-
                         <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
                         <input type="text" class="form-control input-lg text-center" placeholder="What Are you looking for?" ng-model="searchterms" ng-model-options="{debounce:500}" ng-change="runSearch(searchterms,whereyouare)" ng-hide="addTypeahead==true">
                         <input type="text" class="form-control input-lg text-center" placeholder="What Are you looking for?" ng-model="searchterms" ng-hide="addTypeahead==false">

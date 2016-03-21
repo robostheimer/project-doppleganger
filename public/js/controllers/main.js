@@ -124,25 +124,33 @@ function($http, $q, CityFind) {
 		$scope.loading=false
 	});
 	$scope.runSearch = function(searchterms, location) {
-		SearchYelp.searchYelp(searchterms, location).then(function(result){
-		 		$scope.keyword_results =result.businesses; 
-		 });
+		if(searchterms!==undefined && location!==undefined)
+		{
+			$scope.keyword_results = [];
+			SearchYelp.searchYelp(searchterms, location).then(function(result){
+			 	$scope.keyword_results =result.businesses; 
+			});
+		}
 	}
 	
 	$scope.runBusinessSearch = function(searchterms, location, destination) {
-		SearchYelp.searchYelp(searchterms, location).then(function(result){
-		 		var id =result.businesses[0].id
-		 		SearchYelp.searchYelpBusiness(id).then(function(data){
-		 			var length = data.categories[0].length;
-		 			var categoriesStr = ''
-		 			data.categories.forEach(function(item) {
-		 				categoriesStr+= item[0]+' '
-		 			})
-		 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata){
-		 				$scope.placesyoulike_results = moredata.businesses;
-		 			});
-		 		}); 
-		 });	
+		if(searchterms!==undefined && location!=undefined && destination!=undefined)
+		{
+			$scope.placesyoulike_results = [];
+			SearchYelp.searchYelp(searchterms, location).then(function(result){
+			 		var id =result.businesses[0].id
+			 		SearchYelp.searchYelpBusiness(id).then(function(data){
+			 			var length = data.categories[0].length;
+			 			var categoriesStr = ''
+			 			data.categories.forEach(function(item) {
+			 				categoriesStr+= item[0]+' '
+			 			})
+			 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata){
+			 				$scope.placesyoulike_results = moredata.businesses;
+			 			});
+			 		}); 
+			 });	
+		}
 	};
 
 	$scope.showKeywords = function() {
