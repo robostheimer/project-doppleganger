@@ -26,8 +26,7 @@ function($http, $q, CityFind) {
 			var deferred = $q.defer();
 			navigator.geolocation.getCurrentPosition(function(data){
 					CityFind.findCity(data.coords.latitude, data.coords.longitude, .01).then(function(location){
-						console.log(location)
-					deferred.resolve({lat: data.coords.latitude, lon: data.coords.longitude, city:location.city, state: location.state});
+						deferred.resolve({lat: data.coords.latitude, lon: data.coords.longitude, city:location.city, state: location.state});
 				})	
 			}, function(error){
 				deferred.resolve(false);
