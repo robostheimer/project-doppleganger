@@ -11,7 +11,7 @@ body {
   width: 90%;
   height: 90%;
   border: 1px solid #999;
-  position: absolute;
+  position: fixed;
   left: 5%;
   top: 5%;
 }
