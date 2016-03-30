@@ -7,7 +7,14 @@ body {
   overflow-y: hidden;
   overflow-x: hidden;
 }
-
+#map {
+  width: 90%;
+  height: 90%;
+  border: 1px solid #999;
+  position: absolute;
+  left: 5%;
+  top: 5%;
+}
 .container {
   min-height: 200px;
 }
@@ -93,6 +100,48 @@ footer p {
 footer p:nth-of-type(1) {
   border-top: 1px solid #428bca;
   padding-top: 10px
+}
+
+.toggler {
+  width: 200px;
+}
+.icon {
+  display: inline-block; 
+  background:none; 
+  border: none; 
+  font-size: 1.5rem; 
+  padding: 8px; 
+  border-radius: 3px;
+}
+
+.big-icon {
+  display: inline-block; 
+  background:none; 
+  border: none;
+  font-size: 1.5rem; 
+  padding: 8px; 
+  border-radius: 3px;
+  color: #428bca;
+ }
+
+.icon.on {
+  color: white; 
+  background: #428bca; 
+}
+
+.icon.off{
+  color: #428bca;
+}
+
+.map-close {
+  position: absolute;
+  top: 7%;
+  right: 7%;
+  z-index: 1;
+  font-size: 1.5rem;
+  color: #999;
+  background: none;
+  border: none;
 }
 
 @media screen and   (min-width:1601px)   {

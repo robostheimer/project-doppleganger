@@ -1,0 +1,39 @@
+@font-face {
+    font-family: 'DoppleGanger';
+    src:    url('../fonts/DoppleGanger.eot?8h3731');
+    src:    url('../fonts/DoppleGanger.eot?8h3731#iefix') format('embedded-opentype'),
+        url('../fonts/DoppleGanger.ttf?8h3731') format('truetype'),
+        url('../fonts/DoppleGanger.woff?8h3731') format('woff'),
+        url('../fonts/DoppleGanger.svg?8h3731#DoppleGanger') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'DoppleGanger' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-Logo:before {
+    content: "\e900";
+}
+.icon-uni6A:before {
+    content: "\6a";
+}
+.icon-uni6D:before {
+    content: "\6d";
+}
+.icon-uni78:before {
+    content: "\78";
+}
+
