@@ -134,7 +134,7 @@ footer p:nth-of-type(1) {
 }
 
 .map-close {
-  position: absolute;
+  position: fixed;
   top: 7%;
   right: 7%;
   z-index: 1;
