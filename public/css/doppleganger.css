@@ -1,12 +1,36 @@
+/*
+font-family: 'Raleway', sans-serif;
+font-family: 'Cabin', sans-serif;
+font-family: 'Oxygen', sans-serif;
+font-family: 'PT-Sans Narrow' ,sans-serif;
+*/
+
 html {
   overflow-y:scroll; 
   overflow-x: hidden;
+  font-size: 62.5%;
 }
 body {
   padding-top:0px;
   overflow-y: hidden;
   overflow-x: hidden;
+  font-family: 'PT-Sans Narrow', sans-serif;
+  font-size: 14px;
 }
+
+a {
+  color: #428bca;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #b1b1b1;
+}
+
 #map {
   width: 90%;
   height: 90%;
@@ -29,39 +53,96 @@ body {
   background: none;
   padding-top: 20px;
   padding-bottom: 20px;
+  width: 100%;
+}
+.tabs{
+  width: 100%;
+}
+.btn {
+  border: none;
+  font-size: 2rem;
+  padding: 13px;
+  border: 1px solid #b1b1b1;
 }
 .btn,.btn.off { 
-  width: 250px; 
-  margin: 10px; 
+  width: 50%; 
   background-color: 
   white; 
   color: #428bca;
   margin-bottom: 0;
+  text-align: center
 }
 .btn.on {
     background-color: #428bca; 
     color: white;
 }
+.form-control {
+  width: 31%;
+  box-sizing: border-box;
+  margin-right: 1%; 
+  margin-left: 1%;
+  margin-top: 15px;
+  font-size: 1.3rem;
+  line-height: 2rem;
+  padding: 3px;
+  border-radius: 5px;
+}
+.form-control:nth-of-type(1){
+  margin-left: 0;
+}
 .rows { 
   margin: auto;
-  display: block;
+  display: table;
   margin-top: 15px;
   overflow-y: scroll;
+  width: 100%;
+  box-sizing: border-box;
 }
-.place {
+.place, .indiv-map {
   text-align: left;
-  display: inline-block;
   padding-bottom: 0;
-  width: 20%;
+  width: 18%;
   box-sizing: border-box;
   margin: auto;
-  margin-right: 5px;
-  margin-left: 5px;
-  margin-bottom: 10px
+  margin-right: 1%;
+  margin-left: 1%;
+  margin-bottom: 10px;
+  border: 1px solid #c5c5c5;
+  padding: 7px;
+  padding-top: 0;
+  display: inline-grid;
+  vertical-align: top;
 }
+
+.place .image {
+  display: table-cell;
+    vertical-align: top
+}
+.place .image img {
+  width: 75px
+  height: 75px;
+  margin-right: 10px;
+  margin-top: 7px;
+  border: 1px solid #b1b1b1;
+  border-radius: 50%;
+}
+.place header {
+  width: 100%;
+  display:table;
+}
+
+.place .description {
+  display: table-cell;
+  vertical-align: top
+}
+.place h2 {
+  font-size: 1.75rem;
+  display: inline;
+  margin-left: 10px;
+  border-bottom: 1px solid #428bca;
+}
+
 .place .place-block {
-  margin: 10px;
-  margin-top: 5px;
   margin-bottom: 5px;
   display: block;
   display: inline;
@@ -70,25 +151,21 @@ body {
   float: none;
   display: block;
 }
-.form-control {
-    width: 96%;
-}
-input {
-  margin: 10px; 
-}
+
 .number {
-    font-size: 3rem;
-    display: inline;
-    color: #428bca;
+  font-size: 3rem;
+  display: inline;
+  color: #428bca;
+  margin-left: 5px;
 }
 footer {
     
-    width: 100%;
     margin: auto;
     background: white;
-    padding-right: 12.5%;
-    padding-left: 12.5%;
     padding-bottom: 10px;
+    position: fixed; 
+    bottom: 0;
+    width: 100%
 }
 footer p {
   text-align: center;
@@ -144,127 +221,94 @@ footer p:nth-of-type(1) {
   border: none;
 }
 
-@media screen and   (min-width:1601px)   {
-    .rows {
-        width: 1600px;
-    }
-    .place { 
-      width: 320px;
-     }
-     .input-lg {
-        width: 75%;
-        margin-left: 12.5%;
-     }
+.logo {
+  font-size: 6rem;
+  padding: 15px;
+  margin: auto;
+  width: 100px
 }
 
+
+
 @media screen and  (max-width: 1280px) and (min-width:1025px) {
-    .rows {
-        width: 1024px;
-    }
+  
     .place {
-        width: 190px;
+        width: 23%;
     }
     .btn, .btn.on, .btn.off {
-      width: 40%;
-      box-sizing: border-box;
-      display: inline-block;
       font-size: 1.75rem;
-      padding: 10px;
-      margin: 1%;
-      margin-right: 0;
-    }
+     }
 }
 
 @media screen and  (max-width: 1024px) and (min-width:768px) {
-     .rows {
-        width: 768px;
-     }
+    
      .place {
-        width: 175px;
+        width: 31%;
     }
      .btn, .btn.on, .btn.off {
-      width: 48.5%;
-      box-sizing: border-box;
-      display: inline-block;
       font-size: 1.75rem;
-      padding: 10px;
-      margin: 1%;
-      margin-right: 0;
+    }
+    .image img {
+      width: 50px;
+      height: 50px
     }
 }
 
 @media screen and  (max-width: 767px) and (min-width:640px) {
-     .rows {
-        width: 640px;
-     }
+    
      .place {
-        width: 200px
+       width: 31%
     }  
      .btn, .btn.on, .btn.off {
-      width: 48.5%;
-      box-sizing: border-box;
-      display: inline-block;
+      
       font-size: 2rem;
-      padding: 10px;
-      margin: 1%;
-      margin-right: 0;
     }
-    .jumbotron img {
-      width: 200px;
-      height: 91px;
+    .logo {
+      font-size: 5rem;
+      width: 110px
+    }
+     .image img {
+      width: 30px;
+      height: 30px
     }
 }
 
 @media screen and  (max-width: 639px ) and (min-width: 480px) {
-     .rows {
-        width: 480px;
-     }
      .place {
-        width: 210px;
+        width: 48%
     }
     .btn, .btn.on, .btn.off {
-      width: 48.5%;
-      box-sizing: border-box;
-      display: inline-block;
       font-size: 1.5rem ;
-      padding: 10px;
-      margin: 1%;
-      margin-right: 0;              
     }
-    .jumbotron img {
-      width: 150px;
-      height: 68px;
+    .logo {
+      font-size: 4.5rem;
+      width:135px;
     }
-
-
+    .image img {
+      display: none
+    }
 }
 
 @media screen and  (max-width: 479px )  {
-     .rows {
-        width: 240px;
-     }
-     .place {
-        width: 205px;
-    }
-    .input-lg {
-        font-size: 1.5rem;
-        height: 40px;
-    }
-    .btn, .btn.on, .btn.off {
-      width: 48%;
-      box-sizing: border-box;
-      display: inline-block;
-      font-size: 1rem;
-      padding: 10px;
-      margin: 1%;
-      margin-right: 0;
-    }
-    .jumbotron img {
-      width: 100px;
-      height: 45px;
-    }
+   .place {
+      width: 99%;
+      margin: auto;
+      margin-bottom: 15px;
+  }
 
-
+  .form-control {
+    width: 30%;
+  }
+  .btn, .btn.on, .btn.off {
+    font-size: 1.4rem;
+  }
+  .logo {
+    font-size: 4rem;
+    width: 90px;
+  }
+  .image img {
+    display: none
+  }
 }
 
 /*Prealoader*/

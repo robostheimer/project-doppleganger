@@ -76,6 +76,7 @@ function($http, $q, CityFind) {
 	$scope.noBusinesses = false;
 	$scope.searching = false;
 	$scope.noMap = true;
+	$scope.indivMap=false
 
 		Geolocation.checkGeolocation().then(function(data){
 		if(data !== false)
@@ -125,9 +126,10 @@ function($http, $q, CityFind) {
 			 	$scope.keyword_results =result.businesses; 
 
 			 	result.businesses.forEach(function(item) {
+			 		item.showIndivMap = false;
  					$rootScope.markers.push(item);
  				});
-			 	$rootScope.markers_holder = $rootScope.markers //creates a cache of the markers;
+			 	$scope.markers_holder = $rootScope.markers //creates a cache of the markers;
 			 	$scope.searching = false;
 				}
 			});
@@ -177,9 +179,10 @@ function($http, $q, CityFind) {
 					 				$scope.searching = false;
 					 				
 					 				moredata.businesses.forEach(function(item) {
-				 					$rootScope.markers.push(item);
+				 						item.showIndivMap = false;
+				 						$rootScope.markers.push(item);
 				 					});
-				 					$rootScope.markers_holder = $rootScope.markers;//creates a cache of the markers
+				 					$scope.markers_holder = $rootScope.markers;//creates a cache of the markers
 					 			}	
 				 			});		
 				 		});
@@ -188,26 +191,37 @@ function($http, $q, CityFind) {
 		}
 	};
 
-
+/**
+	TODO: Filter by geolocation, rating, # of reviews
+	Make the form inputs more friendly on a phone/think about design (cards with images?)
+	custom markers ?
+	Add # of miles and ability to get directions using ArcGIS
+	Color Code the cards by ranking
+**/	
 	$scope.showMap = function() {
 		$scope.noMap = false;		
-		$rootScope.markers = $rootScope.markers_holder;
+		$rootScope.markers = $scope.markers_holder;
 	}
 
-	$scope.showIndivMap = function(index) {
-		$scope.searching = true;
+	$scope.showIndivMap = function(index, type) {
+		// if(type == 'keyword') {
+		// 	$scope.keyword_results[index].showIndivMap = true;
+		// }
+		// else {
+		// 	$scope.placesyoulike_results.showIndivMap = true;
+		// }
+		$scope.noMap=false;
 		$rootScope.geolocation.together = $rootScope.markers[index].location.coordinate.latitude +', '+$rootScope.markers[index].location.coordinate.longitude;
 		$rootScope.geolocation.lat = $rootScope.markers[index].location.coordinate.latitude;
 		$rootScope.geolocation.lon = $rootScope.markers[index].location.coordinate.longitude;
-		$rootScope.markers_holder = $rootScope.markers; //creates a cache of the markers
-		$rootScope.markers = [$rootScope.markers[index]];
-		$scope.noMap = false;		
+		$scope.markers_holder = $rootScope.markers; //creates a cache of the markers
+		$rootScope.markers = [$rootScope.markers[index]];	
 	}
 
 	$scope.hideMap = function() {
 		$scope.noMap = true;
 		$scope.searching = false;
-		$rootScope.markers = $rootScope.markers_holder;
+		$rootScope.markers = $scope.markers_holder;
 	}
 	
 	$scope.showKeywords = function() {
@@ -232,55 +246,57 @@ function($http, $q, CityFind) {
 	 restrict: 'AE',
      scope: { }, 
      transclude: true,
-   // template:'<div id="map"></div>',
+
     link: function(scope, element, attr ) {
-    $rootScope.markers =[];
-		$rootScope.geolocation={};
-		$rootScope.geolocation.lat=0;
-		$rootScope.geolocation.lon=0;
-		$rootScope.geolocation.orig_lat=0;
-		$rootScope.geolocation.orig_lon=0;
-		$rootScope.geolocation.zoom=15;
-		$rootScope.mapOpening=true;
-        	
+	    $rootScope.markers =[];
+			$rootScope.geolocation={};
+			$rootScope.geolocation.lat=0;
+			$rootScope.geolocation.lon=0;
+			$rootScope.geolocation.orig_lat=0;
+			$rootScope.geolocation.orig_lon=0;
+			$rootScope.geolocation.zoom=15;
+			$rootScope.mapOpening=true;
+	        	
 
-		var map = new L.Map("map",{});
-		var markers=[];
-		var cirlce;
-		//var HERE_normalDayGrey = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/normal.day.grey/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
-		//var HERE_carnavDayGrey = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/carnav.day.grey/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
+			var map = new L.Map("map",{});
+			var markers=[];
+			var cirlce;
+			//var HERE_normalDayGrey = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/normal.day.grey/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
+			//var HERE_carnavDayGrey = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/carnav.day.grey/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
 
-		//var Esri_WorldGrayCanvas = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-		//var OpenStreetMap_Mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-		//var Esri_WorldStreetMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
-//});			
-		//var Esri_WorldTopoMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri&mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
+			//var Esri_WorldGrayCanvas = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+			//var OpenStreetMap_Mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+			//var Esri_WorldStreetMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
+	//});			
+			//var Esri_WorldTopoMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri&mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
 
-		var MAP = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-			subdomains: '1234',
-			mapID: 'newest',
-			app_id: 'Y8m9dK2brESDPGJPdrvs',
-			app_code: 'dq2MYIvjAotR8tHvY8Q_Dg',
-			base: 'base',
-			minZoom: 0,
-			maxZoom: 20					
-			});
-		var marker_content = '';
+			var MAP = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+				subdomains: '1234',
+				mapID: 'newest',
+				app_id: 'Y8m9dK2brESDPGJPdrvs',
+				app_code: 'dq2MYIvjAotR8tHvY8Q_Dg',
+				base: 'base',
+				minZoom: 0,
+				maxZoom: 20					
+				});
+			var marker_content = '';
 
-		
-		map.addLayer(MAP); 	
+			map.addLayer(MAP); 	
     	   	  	
     	attr.$observe('change', function() {
     		markers.forEach(function(item){
     			map.removeLayer(item);
-    		})
+    		});
+
     		if($rootScope.geolocation.orig_lat !== undefined && $rootScope.geolocation.orig_lat !== undefined &&$rootScope.geolocation.orig_lat !== 0 && $rootScope.geolocation.orig_lat !== 0) {
       		var circle = L.circle([$rootScope.geolocation.orig_lat, $rootScope.geolocation.orig_lon], 125, {
 				    color: '#428bca',
 				    fillColor: '#428bca',
 				    fillOpacity: 0.15
 					}).addTo(map); 	
+					//map.panTo(new L.LatLng($rootScope.geolocation.orig_lat, $rootScope.geolocation.orig_lon));
 				}
+
       	if($rootScope.markers.length>0)
       	{
       		markers =[];
@@ -291,18 +307,18 @@ function($http, $q, CityFind) {
 					markers.push(L.marker([marker.location.coordinate.latitude, marker.location.coordinate.longitude]).bindPopup(marker_content));
 					});
        	}
-      map.animate=true;
-			map._zoom = 13;
-			map.scrollWheelZoom.disable();
-			map.panTo([attr.latitude, attr.longitude]);
-		 	
-		 	map.zoomControl.options.position='topright';
-	 		
-			markers.forEach(function(marker) {
-				marker.addTo(map);
-			});
-		$rootScope.mapOpening=false;    	
-       }); 
+
+	      map.animate=true;
+				map._zoom = 13;
+				map.scrollWheelZoom.disable();
+				map.panTo([attr.latitude, attr.longitude]);
+			 	map.zoomControl.options.position='topright';
+		 		
+				markers.forEach(function(marker) {
+					marker.addTo(map);
+				});
+	 	
+	      }); 
       }  
    };
 	});		     

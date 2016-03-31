@@ -6,17 +6,19 @@
     <!-- META -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
-
-
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
 
     <title>Doppleganger: Find Your Hometown Services Anywhere</title>
 
-    <!-- SCROLLS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 
+    <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
+    <link href='https://fonts.googleapis.com/css?family=Raleway:400,500,400italic,500italic,600,600italic,700,700italic|Cabin:400,400italic,500,500italic,600,600italic,700,700italic|Oxygen:400,300,700|PT+Sans+Narrow:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/doppleganger.css">
     <link rel="stylesheet" href="css/fonts.css">
+    
     <link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="apple-icon-72x72.png">
@@ -32,10 +34,8 @@
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-    <!-- SPELLS -->
+    
+
     <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.2/angular.min.js"></script><!-- load angular -->
     <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI="   crossorigin="anonymous"></script>
@@ -50,12 +50,12 @@
     <div class="container">
 
         <header>
+
         <div class="jumbotron text-center">
-            <img src="../images/Logo_sm.png" alt="doppleganger logo"/>
+            <div class="icon-Logo logo"></div>
         </div>
-        <div class="text-center col-sm-8 col-sm-offset-2">
-            <button class="btn btn-primary btn-lg {{keywordsButtonState}}" ng-click="showKeywords()">Find Your Doppleganger</button>
-            <button class="btn btn-primary btn-lg {{placesButtonState}}" ng-click="showPlaces()" >I'm Here, Now What?</button>
+        <div class="tabs">
+            <button class="btn btn-primary btn-lg {{keywordsButtonState}}" ng-click="showKeywords()">Find Your Doppleganger</button><button class="btn btn-primary btn-lg {{placesButtonState}}" ng-click="showPlaces()" >I'm Here, Now What?</button>
             <div class="cssload-container" ng-show="loading==true">
                 <div class="cssload-whirlpool"></div>
             </div>
@@ -93,55 +93,92 @@
                 </form>
             </div>
         </div>
+
          <section class="toggler">
             <button class=" big-icon"  ng-click="showMap();"  ng-hide="placesyoulike_results == undefined || places == false" >View all results on map »»</button>
         </section>
         <section class="toggler">
             <button class=" big-icon"  ng-click="showMap();"  ng-hide="keyword_results == undefined || keywords == false">View all results on map »»</button>
         </section>  
+
         </header>
+        
          <div class="rows" id="places" ng-show="noBusinesses == false"  ng-hide="places==false">
+            
             <div class="cssload-container" ng-show="searching==true">
                 <div class="cssload-whirlpool"></div>
             </div>
            
             <h2 ng-hide="noBusinesses==false">There are no businesses that meet your search.</h2> 
+            
             <div ng-repeat="item in placesyoulike_results" class="place" ng-hide="places==false || searching==true" number="{{index+1}}" name="{{item.name}}" street-address="{{item.location.address[0]}}" city="{{item.location.city}}" tel="{{item.display_phone}}" stars="{{item.rating_img_url}}">
-
-                <div class="number">{{$index+1}}</div>
-                <div class="place-block">
-                    <a href="{{item.url}}" target="_blank">{{item.name}}</a>
-                    <br>{{item.location.address[0]}}
-                    <br>{{item.location.city}}
-                    <br><a href="tel://{{item.display_phone}}">{{item.display_phone}}</a>
-                    <br><img src="{{item.rating_img_url}}" alt="{{item.rating}} stars">
-                    <button class="icon-uni6A icon off"  ng-click="showIndivMap($index);"  ></button>
+                <header ng-hide="item.showIndivMap == true">
+                    <div class="image">
+                        <img src="{{item.image_url}}" alt="{{item.name}}"/>
+                    </div>
+                     <span class="number">{{$index+1}}
+                        <h2><a href="{{item.url}}" target="_blank">{{item.name}}</a></h2>
+                    </span>
+                     <p>{{item.snippet_text}}</p>
+                </header>
+                <div class="description" ng-hide="item.showIndivMap == true">
+                    <div class="place-block">
+                        {{item.location.address[0]}}
+                        <br>{{item.location.city}}
+                        <br><a href="tel://{{item.display_phone}}">{{item.display_phone}}</a>
+                        <br><img src="{{item.rating_img_url}}" alt="{{item.rating}} stars">
+                        <button class="icon-uni6A icon off"  ng-click="showIndivMap($index, 'place');" ></button>
+                    </div>
                 </div>
+                 <div class="indiv-map" ng-hide="item.showIndivMap == false">
+                    where map will go
+                </div> 
             </div>
         </div>
+        
         <div class="rows" id="keywords" ng-show="noBusinesses == false" ng-hide="keywords==false">
+             
              <div class="cssload-container" ng-show="searching==true">
                 <div class="cssload-whirlpool"></div>
              </div>
+             
              <div ng-repeat="item in keyword_results"  class="place" ng-hide="keywords==false || searching==true" number="{{index+1}}" name="{{item.name}}" street-address="{{item.location.address[0]}}" city="{{item.location.city}}" tel="{{item.display_phone}}" stars="{{item.rating_img_url}}">
-                <div class="number">{{$index+1}}</div>
-                <div class="place-block">
-                    <a href="{{item.url}}" target="_blank">{{item.name}}</a>
-                    <br>{{item.location.address[0]}}
-                    <br>{{item.location.city}}
-                    <br><a href="tel://{{item.display_phone}}">{{item.display_phone}}</a>
-                    <br><img src="{{item.rating_img_url}}" alt="{{item.rating}} stars">
-                    <button class="icon-uni6A icon off"  ng-click="showIndivMap($index);" ></button>
+                <header ng-hide="item.showIndivMap == true">
+                    <div class="image">
+                        <img src="{{item.image_url}}" alt="{{item.name}}"/>
+                    </div>
+                     <span class="number">{{$index+1}}
+                        <h2><a href="{{item.url}}" target="_blank">{{item.name}}</a></h2>
+                    </span>
+                    <p>{{item.snippet_text}}</p>
+                </header>
+                <div class="description" ng-hide="item.showIndivMap == true">
+                    <div class="place-block">
+                       {{item.location.address[0]}}
+                        <br>{{item.location.city}}
+                        <br><a href="tel://{{item.display_phone}}">{{item.display_phone}}</a>
+                        <br><img src="{{item.rating_img_url}}" alt="{{item.rating}} stars">
+                        <button class="icon-uni6A icon off"  ng-click="showIndivMap($index, 'keyword');" ></button>
+                    </div>
                 </div>
-            </div>
+                <div class="indiv-map" ng-hide="item.showIndivMap == false">
+                    where map will go
+                </div>
+            </div> 
+             
         </div>
+
         <section class="map">  
             <button class="map-close icon-uni78" ng-click="hideMap();" ng-hide="noMap==true"></button>
             <dg-map id="map" latitude="{{geolocation.lat}}" longitude="{{geolocation.lon}}" change="{{searching}}" ng-hide="noMap==true" >
             </dg-map>
         </section>
-    </div>
 
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
     
      <footer>
          <p>From <a href="http://cityblinking.com">Big City Blinking</a></p>
