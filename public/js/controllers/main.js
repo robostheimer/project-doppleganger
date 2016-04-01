@@ -75,8 +75,32 @@ function($http, $q, CityFind) {
 	$scope.loading = true;
 	$scope.noBusinesses = false;
 	$scope.searching = false;
-	$scope.noMap = true;
-	$scope.indivMap=false
+	$scope.noMap = false;
+	$scope.indivMap = false;
+	$scope.viewIcons = [
+		{
+			name: 'icon-map',
+			state: 'on',
+			class: 'show',
+			status: 'disabled'
+		},
+		{
+			name: 'icon-boxes',
+			state: 'off',
+			class: 'hide',
+			status: 'disabled'
+		}
+	];
+	$scope.filterIcons = [
+		{
+			name: 'icon-sort-alpha-asc',
+			state: 'off'
+		},
+		{
+			name: 'icon-sort-alpha-desc',
+			state: 'off'
+		}
+	];
 
 		Geolocation.checkGeolocation().then(function(data){
 		if(data !== false)
@@ -89,11 +113,10 @@ function($http, $q, CityFind) {
 			$rootScope.geolocation.orig_lon = data.lon;
 			$scope.whereyouare = data.city+', '+data.state;
 			$scope.addTypeahead=true;
-			$scope.loading=false
+			$scope.loading=false;
 		}
-
 		$scope.addTypeahead = false;
-		$scope.loading=false
+		$scope.loading=false;
 	});
 
 	$scope.runSearch = function(searchterms, location) {
@@ -131,6 +154,7 @@ function($http, $q, CityFind) {
  				});
 			 	$scope.markers_holder = $rootScope.markers //creates a cache of the markers;
 			 	$scope.searching = false;
+			 	$scope.enableButtons($scope.viewIcons);
 				}
 			});
 		}
@@ -177,6 +201,7 @@ function($http, $q, CityFind) {
 					 				
 					 				$scope.placesyoulike_results = moredata.businesses;
 					 				$scope.searching = false;
+					 				$scope.enableButtons($scope.viewIcons);
 					 				
 					 				moredata.businesses.forEach(function(item) {
 				 						item.showIndivMap = false;
@@ -204,18 +229,23 @@ function($http, $q, CityFind) {
 	}
 
 	$scope.showIndivMap = function(index, type) {
-		// if(type == 'keyword') {
-		// 	$scope.keyword_results[index].showIndivMap = true;
-		// }
-		// else {
-		// 	$scope.placesyoulike_results.showIndivMap = true;
-		// }
-		$scope.noMap=false;
-		$rootScope.geolocation.together = $rootScope.markers[index].location.coordinate.latitude +', '+$rootScope.markers[index].location.coordinate.longitude;
-		$rootScope.geolocation.lat = $rootScope.markers[index].location.coordinate.latitude;
-		$rootScope.geolocation.lon = $rootScope.markers[index].location.coordinate.longitude;
-		$scope.markers_holder = $rootScope.markers; //creates a cache of the markers
-		$rootScope.markers = [$rootScope.markers[index]];	
+		if(type == 'keyword') {
+			$scope.keyword_results[index].showIndivMap = true;
+			$scope.createIndivMap($scope.keyword_results[index], index);
+		}
+		else {
+			$scope.placesyoulike_results.showIndivMap = true;
+			$scope.createIndivMap($scope.keyword_results[index]);
+		}
+		
+
+
+		// $scope.noMap=false;
+		// $rootScope.geolocation.together = $rootScope.markers[index].location.coordinate.latitude +', '+$rootScope.markers[index].location.coordinate.longitude;
+		// $rootScope.geolocation.lat = $rootScope.markers[index].location.coordinate.latitude;
+		// $rootScope.geolocation.lon = $rootScope.markers[index].location.coordinate.longitude;
+		// $scope.markers_holder = $rootScope.markers; //creates a cache of the markers
+		// $rootScope.markers = [$rootScope.markers[index]];	
 	}
 
 	$scope.hideMap = function() {
@@ -237,6 +267,62 @@ function($http, $q, CityFind) {
 		$scope.placesButtonState='on';
 		$scope.keywordsButtonState='off';
 	};
+	
+	$scope.enableButtons = function(btnArr) {
+		btnArr.forEach(function(item){
+			item.status = 'enabled'
+		});
+	}
+	
+	$scope.changeView = function(type) {
+		$scope.viewIcons.forEach(function(item, name){
+			if(item.status !== 'disabled') {
+
+				if(type==item.name)
+				{
+					item.state = 'on';	
+					item.class = 'show';
+				} else {
+					item.state = 'off';
+					item.class = 'hide'
+				}
+			}
+		})
+	};
+
+$scope.createIndivMap = function(item, index) {
+	var mapId = 'map'+index,
+
+	map = new L.Map(mapId,{}),
+	
+	MAP = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+				subdomains: '1234',
+				mapID: 'newest',
+				app_id: 'Y8m9dK2brESDPGJPdrvs',
+				app_code: 'dq2MYIvjAotR8tHvY8Q_Dg',
+				base: 'base',
+				minZoom: 0,
+				maxZoom: 20					
+				}),
+	
+	circle = L.circle([$rootScope.geolocation.orig_lat, $rootScope.geolocation.orig_lon], 125, {
+				    color: '#428bca',
+				    fillColor: '#428bca',
+				    fillOpacity: 0.15
+					})
+	marker_content = '<b>'+index+1.+' <a href="'+item.url+'" target="_blank">'+item.name+'</a></b><br>'+item.location.address[0]+'<br>'+item.location.city+'<br><a href="tel://'+item.display_phone+'">'+item.display_phone+'</a><br><img src="'+item.rating_img_url+'" alt="'+item.rating+' stars">', 
+	
+	marker = L.marker([item.location.coordinate.latitude, item.location.coordinate.longitude]).bindPopup(marker_content);
+	map.addLayer(MAP);
+ 	map.animate=true;
+	map._zoom = 13	;
+	map.scrollWheelZoom.disable();
+	map.panTo([0,0]);
+ 	map.zoomControl.options.position='topright';
+	marker.addTo(map);
+	circle.addTo(map);
+	console.log(map)
+}
 
 }])
 
@@ -250,17 +336,18 @@ function($http, $q, CityFind) {
     link: function(scope, element, attr ) {
 	    $rootScope.markers =[];
 			$rootScope.geolocation={};
-			$rootScope.geolocation.lat=0;
-			$rootScope.geolocation.lon=0;
+			$rootScope.geolocation.lat = 41.654811;
+      $rootScope.geolocation.lon = -91.5380717;
 			$rootScope.geolocation.orig_lat=0;
 			$rootScope.geolocation.orig_lon=0;
-			$rootScope.geolocation.zoom=15;
+			$rootScope.geolocation.zoom=13;
 			$rootScope.mapOpening=true;
 	        	
 
 			var map = new L.Map("map",{});
 			var markers=[];
 			var cirlce;
+
 			//var HERE_normalDayGrey = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/normal.day.grey/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
 			//var HERE_carnavDayGrey = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/carnav.day.grey/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
 
@@ -284,18 +371,20 @@ function($http, $q, CityFind) {
 			map.addLayer(MAP); 	
     	   	  	
     	attr.$observe('change', function() {
+
     		markers.forEach(function(item){
     			map.removeLayer(item);
     		});
-
-    		if($rootScope.geolocation.orig_lat !== undefined && $rootScope.geolocation.orig_lat !== undefined &&$rootScope.geolocation.orig_lat !== 0 && $rootScope.geolocation.orig_lat !== 0) {
-      		var circle = L.circle([$rootScope.geolocation.orig_lat, $rootScope.geolocation.orig_lon], 125, {
+				if($rootScope.geolocation.orig_lat ===undefined || $rootScope.geolocation.orig_lon === undefined || $rootScope.geolocation.orig_lat===0 || $rootScope.geolocation.orig_lon === 0)
+					{
+						$rootScope.geolocation.orig_lat = $rootScope.geolocation.lat 
+						$rootScope.geolocation.orig_lon = $rootScope.geolocation.lon
+					}	
+				var circle = L.circle([$rootScope.geolocation.orig_lat, $rootScope.geolocation.orig_lon], 125, {
 				    color: '#428bca',
 				    fillColor: '#428bca',
 				    fillOpacity: 0.15
-					}).addTo(map); 	
-					//map.panTo(new L.LatLng($rootScope.geolocation.orig_lat, $rootScope.geolocation.orig_lon));
-				}
+					}).addTo(map);
 
       	if($rootScope.markers.length>0)
       	{
@@ -309,11 +398,10 @@ function($http, $q, CityFind) {
        	}
 
 	      map.animate=true;
-				map._zoom = 13;
+				map._zoom = 13	;
 				map.scrollWheelZoom.disable();
 				map.panTo([attr.latitude, attr.longitude]);
 			 	map.zoomControl.options.position='topright';
-		 		
 				markers.forEach(function(marker) {
 					marker.addTo(map);
 				});

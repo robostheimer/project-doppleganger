@@ -53,16 +53,23 @@
 
         <div class="jumbotron text-center">
             <div class="icon-Logo logo"></div>
+            
         </div>
         <div class="tabs">
             <button class="btn btn-primary btn-lg {{keywordsButtonState}}" ng-click="showKeywords()">Find Your Doppleganger</button><button class="btn btn-primary btn-lg {{placesButtonState}}" ng-click="showPlaces()" >I'm Here, Now What?</button>
-            <div class="cssload-container" ng-show="loading==true">
-                <div class="cssload-whirlpool"></div>
-            </div>
+            
         </div>
         
-        <div id="list-of-places" ng-show="loading==false" >
+        <div class="filters">
+                <button ng-repeat="item in viewIcons" class="{{item.name}} {{item.state}} {{item.status}} big-icon" ng-click="changeView(item.name)"></button>
+                <!-- <button ng-repeat="item in filterIcons" class="{{item.name}} {{item.state}} big-icon" ng-click="runFilters(item.name)"></button> -->
+
+        </div>
         
+        <div id="list-of-places">
+        <div class="cssload-container" ng-show="loading == true || searching == true">
+                <div class="cssload-whirlpool"></div>
+        </div>
         <div id="place-based-form" class="row" ng-hide="places==false" >
             <div class="col-sm-8 col-sm-offset-2 text-center">
                 <form>
@@ -93,88 +100,60 @@
                 </form>
             </div>
         </div>
-
-         <section class="toggler">
-            <button class=" big-icon"  ng-click="showMap();"  ng-hide="placesyoulike_results == undefined || places == false" >View all results on map »»</button>
-        </section>
-        <section class="toggler">
-            <button class=" big-icon"  ng-click="showMap();"  ng-hide="keyword_results == undefined || keywords == false">View all results on map »»</button>
-        </section>  
-
         </header>
-        
+         <section class="map {{viewIcons[0].class}}" ng-hide="noMap==true">  
+            <button class="map-close icon-uni78" ng-click="hideMap();" ng-hide="noMap==true"></button>
+            <dg-map id="map" latitude="{{geolocation.lat}}" longitude="{{geolocation.lon}}" change="{{searching}}" >
+            </dg-map>
+        </section>
+        <section class="boxes {{viewIcons[1].class}}">
          <div class="rows" id="places" ng-show="noBusinesses == false"  ng-hide="places==false">
-            
-            <div class="cssload-container" ng-show="searching==true">
-                <div class="cssload-whirlpool"></div>
-            </div>
-           
             <h2 ng-hide="noBusinesses==false">There are no businesses that meet your search.</h2> 
             
             <div ng-repeat="item in placesyoulike_results" class="place" ng-hide="places==false || searching==true" number="{{index+1}}" name="{{item.name}}" street-address="{{item.location.address[0]}}" city="{{item.location.city}}" tel="{{item.display_phone}}" stars="{{item.rating_img_url}}">
-                <header ng-hide="item.showIndivMap == true">
+                <header ng-class="{hidden: item.showIndivMap == true}">
                     <div class="image">
                         <img src="{{item.image_url}}" alt="{{item.name}}"/>
                     </div>
-                     <span class="number">{{$index+1}}
-                        <h2><a href="{{item.url}}" target="_blank">{{item.name}}</a></h2>
-                    </span>
+                        <h2><span class="number">{{$index+1}}</span> <a href="{{item.url}}" target="_blank">{{item.name}}</a></h2>
                      <p>{{item.snippet_text}}</p>
                 </header>
-                <div class="description" ng-hide="item.showIndivMap == true">
+                <div class="description" ng-class="{hidden: item.showIndivMap == true}">
                     <div class="place-block">
                         {{item.location.address[0]}}
                         <br>{{item.location.city}}
                         <br><a href="tel://{{item.display_phone}}">{{item.display_phone}}</a>
                         <br><img src="{{item.rating_img_url}}" alt="{{item.rating}} stars">
-                        <button class="icon-uni6A icon off"  ng-click="showIndivMap($index, 'place');" ></button>
+                        <button class="icon-map icon off"  ng-click="showIndivMap($index, 'place');" ></button>
                     </div>
                 </div>
                  <div class="indiv-map" ng-hide="item.showIndivMap == false">
-                    where map will go
                 </div> 
             </div>
         </div>
-        
-        <div class="rows" id="keywords" ng-show="noBusinesses == false" ng-hide="keywords==false">
-             
-             <div class="cssload-container" ng-show="searching==true">
-                <div class="cssload-whirlpool"></div>
-             </div>
-             
+        <div class="rows" id="keywords" ng-show="noBusinesses == false"   ng-hide="keywords==false">
              <div ng-repeat="item in keyword_results"  class="place" ng-hide="keywords==false || searching==true" number="{{index+1}}" name="{{item.name}}" street-address="{{item.location.address[0]}}" city="{{item.location.city}}" tel="{{item.display_phone}}" stars="{{item.rating_img_url}}">
-                <header ng-hide="item.showIndivMap == true">
+                <header ng-class="{hidden: item.showIndivMap == true}">
                     <div class="image">
                         <img src="{{item.image_url}}" alt="{{item.name}}"/>
                     </div>
-                     <span class="number">{{$index+1}}
-                        <h2><a href="{{item.url}}" target="_blank">{{item.name}}</a></h2>
-                    </span>
+                        <h2><span class="number">{{$index+1}}</span> <a href="{{item.url}}" target="_blank">{{item.name}}</a></h2>
                     <p>{{item.snippet_text}}</p>
                 </header>
-                <div class="description" ng-hide="item.showIndivMap == true">
+                <div class="description" ng-class="{hidden: item.showIndivMap == true}">
                     <div class="place-block">
                        {{item.location.address[0]}}
                         <br>{{item.location.city}}
                         <br><a href="tel://{{item.display_phone}}">{{item.display_phone}}</a>
                         <br><img src="{{item.rating_img_url}}" alt="{{item.rating}} stars">
-                        <button class="icon-uni6A icon off"  ng-click="showIndivMap($index, 'keyword');" ></button>
+                        <button class="icon-map icon off"  ng-click="showIndivMap($index, 'keyword');" ></button>
                     </div>
                 </div>
-                <div class="indiv-map" ng-hide="item.showIndivMap == false">
-                    where map will go
+                <div class="indiv-map" ng-hide="item.showIndivMap == false" id="map{{$index}}">
                 </div>
             </div> 
-             
         </div>
-
-        <section class="map">  
-            <button class="map-close icon-uni78" ng-click="hideMap();" ng-hide="noMap==true"></button>
-            <dg-map id="map" latitude="{{geolocation.lat}}" longitude="{{geolocation.lon}}" change="{{searching}}" ng-hide="noMap==true" >
-            </dg-map>
-        </section>
-
-    </div>
+    </section>
     <br>
     <br>
     <br>
