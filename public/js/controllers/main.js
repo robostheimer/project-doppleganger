@@ -235,7 +235,7 @@ function($http, $q, CityFind) {
 		}
 		else {
 			$scope.placesyoulike_results.showIndivMap = true;
-			$scope.createIndivMap($scope.keyword_results[index]);
+			$scope.createIndivMap($scope.placesyoulike_results[index]);
 		}
 		
 
