@@ -67,7 +67,7 @@
         </div>
         
         <div id="list-of-places">
-        <div class="cssload-container" ng-show="loading == true || searching == true">
+        <div class="cssload-container" ng-show="loading == true">
                 <div class="cssload-whirlpool"></div>
         </div>
         <div id="place-based-form" class="row" ng-hide="places==false" >
@@ -127,7 +127,8 @@
                         <button class="icon-map icon off"  ng-click="showIndivMap($index, 'place');" ></button>
                     </div>
                 </div>
-                 <div class="indiv-map" ng-hide="item.showIndivMap == false">
+                 <div class="indiv-map" ng-hide="item.showIndivMap == false" >
+                    <div id="place{{$index}}" class="indiv-map-container"></div>
                 </div> 
             </div>
         </div>
@@ -149,7 +150,8 @@
                         <button class="icon-map icon off"  ng-click="showIndivMap($index, 'keyword');" ></button>
                     </div>
                 </div>
-                <div class="indiv-map" ng-hide="item.showIndivMap == false" id="map{{$index}}">
+                <div class="indiv-map" ng-hide="item.showIndivMap == false">
+                    <div id="keyword{{$index}}" class="indiv-map-container"></div>
                 </div>
             </div> 
         </div>

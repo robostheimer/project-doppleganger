@@ -114,6 +114,7 @@ function($http, $q, CityFind) {
 			$scope.whereyouare = data.city+', '+data.state;
 			$scope.addTypeahead=true;
 			$scope.loading=false;
+			$scope.searching = true
 		}
 		$scope.addTypeahead = false;
 		$scope.loading=false;
@@ -129,6 +130,7 @@ function($http, $q, CityFind) {
 		if((searchterms !== undefined && searchterms !== "") && (location !== undefined && location !== ""))
 		{
 			$scope.searching = true;
+			$scope.loading = true;
 
 			SearchYelp.searchYelp(searchterms, location).then(function(result) {
 				
@@ -149,12 +151,13 @@ function($http, $q, CityFind) {
 			 	$scope.keyword_results =result.businesses; 
 
 			 	result.businesses.forEach(function(item) {
-			 		item.showIndivMap = false;
+			 			
  					$rootScope.markers.push(item);
  				});
 			 	$scope.markers_holder = $rootScope.markers //creates a cache of the markers;
 			 	$scope.searching = false;
 			 	$scope.enableButtons($scope.viewIcons);
+			 	$scope.loading = false;
 				}
 			});
 		}
@@ -169,12 +172,14 @@ function($http, $q, CityFind) {
 		if((searchterms !== undefined && searchterms !== "") && (location !== undefined && location !== "")  && (destination !== undefined && destination !== ""))
 		{
 			$scope.searching = true;
+			$scope.loading = true;
 			SearchYelp.searchYelp(searchterms, location).then(function(result) {
 
 	 		if(result.businesses.length === 0)
 	 			{
 	 				$scope.noBusinesses=true;
 	 				$scope.searching = false;
+	 				$scope.loading = false;
 	 			}
 	 			else {
 			 		var id =result.businesses[0].id
@@ -190,6 +195,7 @@ function($http, $q, CityFind) {
 					 			{
 					 				$scope.noBusinesses=true;
 					 				$scope.searching = false;
+					 				$scope.loading = false;
 					 			}	else {
 					 				$rootScope.geolocation .together = ""
 					 				
@@ -201,6 +207,7 @@ function($http, $q, CityFind) {
 					 				
 					 				$scope.placesyoulike_results = moredata.businesses;
 					 				$scope.searching = false;
+					 				$scope.loading = false;
 					 				$scope.enableButtons($scope.viewIcons);
 					 				
 					 				moredata.businesses.forEach(function(item) {
@@ -229,13 +236,14 @@ function($http, $q, CityFind) {
 	}
 
 	$scope.showIndivMap = function(index, type) {
-		if(type == 'keyword') {
-			$scope.keyword_results[index].showIndivMap = true;
-			$scope.createIndivMap($scope.keyword_results[index], index);
+		if(type == 'places') {
+			$scope.placesyoulike_results.showIndivMap = true;
+			$scope.createIndivMap($scope.placesyoulike_results[index], index, type);
+			
 		}
 		else {
-			$scope.placesyoulike_results.showIndivMap = true;
-			$scope.createIndivMap($scope.placesyoulike_results[index]);
+			$scope.keyword_results[index].showIndivMap = true;
+			$scope.createIndivMap($scope.keyword_results[index], index, type);
 		}
 		
 
@@ -250,7 +258,6 @@ function($http, $q, CityFind) {
 
 	$scope.hideMap = function() {
 		$scope.noMap = true;
-		$scope.searching = false;
 		$rootScope.markers = $scope.markers_holder;
 	}
 	
@@ -290,8 +297,8 @@ function($http, $q, CityFind) {
 		})
 	};
 
-$scope.createIndivMap = function(item, index) {
-	var mapId = 'map'+index,
+$scope.createIndivMap = function(item, index, type) {
+	var mapId = type+index,
 
 	map = new L.Map(mapId,{}),
 	
@@ -317,11 +324,12 @@ $scope.createIndivMap = function(item, index) {
  	map.animate=true;
 	map._zoom = 13	;
 	map.scrollWheelZoom.disable();
-	map.panTo([0,0]);
+	map.panTo([$rootScope.geolocation.orig_lat, $rootScope.geolocation.orig_lon]);
  	map.zoomControl.options.position='topright';
 	marker.addTo(map);
 	circle.addTo(map);
-	console.log(map)
+	console.log(map);
+	$('#'+mapId).css({'width': '100%'});
 }
 
 }])
@@ -375,7 +383,8 @@ $scope.createIndivMap = function(item, index) {
     		markers.forEach(function(item){
     			map.removeLayer(item);
     		});
-				if($rootScope.geolocation.orig_lat ===undefined || $rootScope.geolocation.orig_lon === undefined || $rootScope.geolocation.orig_lat===0 || $rootScope.geolocation.orig_lon === 0)
+    		console.log($rootScope.geolocation )
+				if($rootScope.geolocation.orig_lat === undefined || $rootScope.geolocation.orig_lon === undefined || $rootScope.geolocation.orig_lat===0 || $rootScope.geolocation.orig_lon === 0)
 					{
 						$rootScope.geolocation.orig_lat = $rootScope.geolocation.lat 
 						$rootScope.geolocation.orig_lon = $rootScope.geolocation.lon
