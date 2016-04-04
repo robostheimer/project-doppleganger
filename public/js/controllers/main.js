@@ -151,7 +151,8 @@ function($http, $q, CityFind) {
 			 	$scope.keyword_results =result.businesses; 
 
 			 	result.businesses.forEach(function(item) {
-			 			
+			 		item.showIndivMap = false;	
+			 		item.timesShowed = 0;
  					$rootScope.markers.push(item);
  				});
 			 	$scope.markers_holder = $rootScope.markers //creates a cache of the markers;
@@ -212,6 +213,7 @@ function($http, $q, CityFind) {
 					 				
 					 				moredata.businesses.forEach(function(item) {
 				 						item.showIndivMap = false;
+				 						item.timesShowed = 0;
 				 						$rootScope.markers.push(item);
 				 					});
 				 					$scope.markers_holder = $rootScope.markers;//creates a cache of the markers
@@ -237,16 +239,26 @@ function($http, $q, CityFind) {
 
 	$scope.showIndivMap = function(index, type) {
 		if(type == 'place') {
+			console.log($scope.placesyoulike_results[index].timesShowed)
 			$scope.placesyoulike_results[index].showIndivMap = true;
-			$scope.createIndivMap($scope.placesyoulike_results[index], index, type);
-			
+			if($scope.placesyoulike_results[index].timesShowed === 0)
+			{
+				$scope.createIndivMap($scope.placesyoulike_results[index], index, type);
+				$scope.placesyoulike_results[index].timesShowed++;
+			}
 		}
 		else {
 			$scope.keyword_results[index].showIndivMap = true;
-			$scope.createIndivMap($scope.keyword_results[index], index, type);
+			if($scope.keyword_results[index].timesShowed === 0) {
+				$scope.createIndivMap($scope.keyword_results[index], index, type);
+				$scope.keyword_results[index].timesShowed++;
+			}
 		}
 		
-
+	$scope.hideIndivMap = function(index, type) {
+		console.log(this)
+			$scope.placesyoulike_results[index].showIndivMap = false;
+	}
 
 		// $scope.noMap=false;
 		// $rootScope.geolocation.together = $rootScope.markers[index].location.coordinate.latitude +', '+$rootScope.markers[index].location.coordinate.longitude;
@@ -302,7 +314,7 @@ $scope.createIndivMap = function(item, index, type) {
 
 	map = new L.Map(mapId,{}),
 	
-	MAP = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+	INDIV_MAP = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
 				subdomains: '1234',
 				mapID: 'newest',
 				app_id: 'Y8m9dK2brESDPGJPdrvs',
@@ -320,15 +332,15 @@ $scope.createIndivMap = function(item, index, type) {
 	marker_content = '<b>'+index+1.+' <a href="'+item.url+'" target="_blank">'+item.name+'</a></b><br>'+item.location.address[0]+'<br>'+item.location.city+'<br><a href="tel://'+item.display_phone+'">'+item.display_phone+'</a><br><img src="'+item.rating_img_url+'" alt="'+item.rating+' stars">', 
 	
 	marker = L.marker([item.location.coordinate.latitude, item.location.coordinate.longitude]).bindPopup(marker_content);
-	map.addLayer(MAP);
- 	map.animate=true;
+	map.animate=true;
 	map._zoom = 13	;
 	map.scrollWheelZoom.disable();
 	map.panTo([$rootScope.geolocation.orig_lat, $rootScope.geolocation.orig_lon]);
  	map.zoomControl.options.position='topright';
-	marker.addTo(map);
 	circle.addTo(map);
-	$('#'+mapId).css({'width': '100%'});
+	marker.addTo(map);
+	map.addLayer(INDIV_MAP);
+	$('#'+mapId).css({'width': '100%'});	
 }
 
 }])
@@ -382,7 +394,6 @@ $scope.createIndivMap = function(item, index, type) {
     		markers.forEach(function(item){
     			map.removeLayer(item);
     		});
-    		console.log($rootScope.geolocation )
 				if($rootScope.geolocation.orig_lat === undefined || $rootScope.geolocation.orig_lon === undefined || $rootScope.geolocation.orig_lat===0 || $rootScope.geolocation.orig_lon === 0)
 					{
 						$rootScope.geolocation.orig_lat = $rootScope.geolocation.lat 
@@ -413,8 +424,7 @@ $scope.createIndivMap = function(item, index, type) {
 				markers.forEach(function(marker) {
 					marker.addTo(map);
 				});
-	 	
-	      }); 
-      }  
+      }); 
+    }  
    };
 	});		     

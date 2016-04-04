@@ -33,9 +33,11 @@
 .icon-star-filled:before {
     content: "\74";
 }
+/*unfilled-start*/
 .icon-uni75:before {
     content: "\75";
 }
+/*close*/
 .icon-uni78:before {
     content: "\78";
 }

@@ -31,10 +31,6 @@ a:hover {
 a:visited {
   color: #b1b1b1;
 }
-.map {
-   position: relative;
-   width: 100%;
-}
 
 #map {
   width: 100%;
@@ -124,7 +120,7 @@ a:visited {
   top: 0;
   left: 0;
   height: 100%;
-  width: 31%;
+  width: 100%;
 }
 .place .image {
   display: table-cell;
@@ -180,7 +176,7 @@ footer {
     padding-bottom: 10px;
     position: fixed; 
     bottom: 0;
-    width: 100%
+    width: 95%;
 }
 footer p {
   text-align: center;
@@ -231,8 +227,8 @@ footer p:nth-of-type(1) {
 
 .map-close {
   position: absolute;
-  top: 15px;
-  right: 10px;
+  top: 5px;
+  right: 5px;
   z-index: 1;
   font-size: 1.5rem;
   color: #999;
@@ -264,6 +260,11 @@ footer p:nth-of-type(1) {
 
 .hidden {
   visibility: hidden;
+  z-index: -1;
+}
+
+.visible {
+  visibility: visible;
 }
 
 
