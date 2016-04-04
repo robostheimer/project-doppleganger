@@ -236,8 +236,8 @@ function($http, $q, CityFind) {
 	}
 
 	$scope.showIndivMap = function(index, type) {
-		if(type == 'places') {
-			$scope.placesyoulike_results.showIndivMap = true;
+		if(type == 'place') {
+			$scope.placesyoulike_results[index].showIndivMap = true;
 			$scope.createIndivMap($scope.placesyoulike_results[index], index, type);
 			
 		}
@@ -328,7 +328,6 @@ $scope.createIndivMap = function(item, index, type) {
  	map.zoomControl.options.position='topright';
 	marker.addTo(map);
 	circle.addTo(map);
-	console.log(map);
 	$('#'+mapId).css({'width': '100%'});
 }
 

@@ -102,7 +102,6 @@
         </div>
         </header>
          <section class="map {{viewIcons[0].class}}" ng-hide="noMap==true">  
-            <button class="map-close icon-uni78" ng-click="hideMap();" ng-hide="noMap==true"></button>
             <dg-map id="map" latitude="{{geolocation.lat}}" longitude="{{geolocation.lon}}" change="{{searching}}" >
             </dg-map>
         </section>
