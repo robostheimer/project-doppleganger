@@ -175,7 +175,7 @@ footer {
     background: white;
     padding-bottom: 10px;
     position: fixed; 
-    bottom: 0;
+    bottom: 10px;
     width: 95%;
 }
 footer p {
