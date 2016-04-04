@@ -254,19 +254,12 @@ function($http, $q, CityFind) {
 				$scope.keyword_results[index].timesShowed++;
 			}
 		}
-		
+	}
+	
 	$scope.hideIndivMap = function(index, type) {
-		console.log(this)
 			$scope.placesyoulike_results[index].showIndivMap = false;
 	}
 
-		// $scope.noMap=false;
-		// $rootScope.geolocation.together = $rootScope.markers[index].location.coordinate.latitude +', '+$rootScope.markers[index].location.coordinate.longitude;
-		// $rootScope.geolocation.lat = $rootScope.markers[index].location.coordinate.latitude;
-		// $rootScope.geolocation.lon = $rootScope.markers[index].location.coordinate.longitude;
-		// $scope.markers_holder = $rootScope.markers; //creates a cache of the markers
-		// $rootScope.markers = [$rootScope.markers[index]];	
-	}
 
 	$scope.hideMap = function() {
 		$scope.noMap = true;
