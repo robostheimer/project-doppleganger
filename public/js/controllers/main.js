@@ -192,7 +192,8 @@ function($http, $q, CityFind) {
 				 			var categoriesStr = ''
 				 			data.categories.forEach(function(item) {
 				 				categoriesStr+= item[0]+' '
-				 			})
+				 			});
+				 			console.log(categoriesStr)
 				 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata) {
 				 				
 								if(result.businesses.length == 0)
@@ -223,6 +224,11 @@ function($http, $q, CityFind) {
 				 					});
 				 					$scope.markers_holder = $rootScope.markers;//creates a cache of the markers
 					 			}	
+					 			//add another check to rank results - basically re run SearchYelp.searchYelp for city of place you like to with the top three results to see if place you like is actually a doppleganger
+					 			// for(var i=0; i<3; i++){
+					 			// 	$scope.reRunBusinessSearch(moredata.businesses[i].name+' '+categoriesStr, location, destination);
+					 			// }
+
 				 			});		
 				 		});
 			 		} 
@@ -230,6 +236,7 @@ function($http, $q, CityFind) {
 		}
 	};
 
+	
 /**
 	TODO: Filter by geolocation, rating, # of reviews
 	Make the form inputs more friendly on a phone/think about design (cards with images?)
