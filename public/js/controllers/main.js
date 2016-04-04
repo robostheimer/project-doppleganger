@@ -146,6 +146,9 @@ function($http, $q, CityFind) {
 						$rootScope.geolocation.together = result.businesses[0].location.coordinate.latitude +', '+result.businesses[0].location.coordinate.longitude;
 						$rootScope.geolocation.lat = result.businesses[0].location.coordinate.latitude;
 						$rootScope.geolocation.lon = result.businesses[0].location.coordinate.longitude;
+						$rootScope.geolocation.orig_at = result.businesses[0].location.coordinate.latitude;
+						$rootScope.geolocation.orig_lon = result.businesses[0].location.coordinate.longitude;
+						
 					}	
 
 			 	$scope.keyword_results =result.businesses; 
@@ -204,6 +207,9 @@ function($http, $q, CityFind) {
 										$rootScope.geolocation.together = moredata.businesses[0].location.coordinate.latitude +', '+moredata.businesses[0].location.coordinate.longitude;
 										$rootScope.geolocation.lat = moredata.businesses[0].location.coordinate.latitude;
 										$rootScope.geolocation.lon = moredata.businesses[0].location.coordinate.longitude;
+										$rootScope.geolocation.orig_lat = moredata.businesses[0].location.coordinate.latitude;
+										$rootScope.geolocation.orig_lon = moredata.businesses[0].location.coordinate.longitude;
+										
 									}
 					 				
 					 				$scope.placesyoulike_results = moredata.businesses;
@@ -255,7 +261,7 @@ function($http, $q, CityFind) {
 			}
 		}
 	}
-	
+
 	$scope.hideIndivMap = function(index, type) {
 			$scope.placesyoulike_results[index].showIndivMap = false;
 	}
