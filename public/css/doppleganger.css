@@ -329,7 +329,7 @@ footer p:nth-of-type(1) {
 
 @media screen and  (max-width: 479px )  {
    .place {
-      width: 100%;
+      width: 96%;
       margin: auto;
       margin-bottom: 15px;
   }
