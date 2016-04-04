@@ -112,6 +112,7 @@ function($http, $q, CityFind) {
 			$rootScope.geolocation.orig_lat = data.lat;
 			$rootScope.geolocation.orig_lon = data.lon;
 			$scope.whereyouare = data.city+', '+data.state;
+			$scope.geolocationUsed = true;
 			$scope.addTypeahead=true;
 			$scope.loading=false;
 			$scope.searching = true
@@ -140,15 +141,14 @@ function($http, $q, CityFind) {
 	 				$scope.noBusinesses=true;
 	 				$scope.searching = false;
 	 			} else {
-	 				$rootScope.geolocation .together = ""
+	 				//$rootScope.geolocation .together = ""
 	 				
 	 				if($rootScope.geolocation.together === "" || $rootScope.geolocation.together === undefined) {
 						$rootScope.geolocation.together = result.businesses[0].location.coordinate.latitude +', '+result.businesses[0].location.coordinate.longitude;
 						$rootScope.geolocation.lat = result.businesses[0].location.coordinate.latitude;
 						$rootScope.geolocation.lon = result.businesses[0].location.coordinate.longitude;
-						$rootScope.geolocation.orig_at = result.businesses[0].location.coordinate.latitude;
+						$rootScope.geolocation.orig_lat = result.businesses[0].location.coordinate.latitude;
 						$rootScope.geolocation.orig_lon = result.businesses[0].location.coordinate.longitude;
-						
 					}	
 
 			 	$scope.keyword_results =result.businesses; 
@@ -201,7 +201,7 @@ function($http, $q, CityFind) {
 					 				$scope.searching = false;
 					 				$scope.loading = false;
 					 			}	else {
-					 				$rootScope.geolocation .together = ""
+					 				//$rootScope.geolocation .together = ""
 					 				
 					 				if($rootScope.geolocation.together === "" || $rootScope.geolocation.together === undefined) {
 										$rootScope.geolocation.together = moredata.businesses[0].location.coordinate.latitude +', '+moredata.businesses[0].location.coordinate.longitude;
@@ -209,7 +209,6 @@ function($http, $q, CityFind) {
 										$rootScope.geolocation.lon = moredata.businesses[0].location.coordinate.longitude;
 										$rootScope.geolocation.orig_lat = moredata.businesses[0].location.coordinate.latitude;
 										$rootScope.geolocation.orig_lon = moredata.businesses[0].location.coordinate.longitude;
-										
 									}
 					 				
 					 				$scope.placesyoulike_results = moredata.businesses;
@@ -331,12 +330,15 @@ $scope.createIndivMap = function(item, index, type) {
 	marker_content = '<b>'+index+1.+' <a href="'+item.url+'" target="_blank">'+item.name+'</a></b><br>'+item.location.address[0]+'<br>'+item.location.city+'<br><a href="tel://'+item.display_phone+'">'+item.display_phone+'</a><br><img src="'+item.rating_img_url+'" alt="'+item.rating+' stars">', 
 	
 	marker = L.marker([item.location.coordinate.latitude, item.location.coordinate.longitude]).bindPopup(marker_content);
+	
 	map.animate=true;
 	map._zoom = 13	;
 	map.scrollWheelZoom.disable();
-	map.panTo([$rootScope.geolocation.orig_lat, $rootScope.geolocation.orig_lon]);
+	map.panTo([item.location.coordinate.latitude, item.location.coordinate.longitude]);
  	map.zoomControl.options.position='topright';
-	circle.addTo(map);
+	if($scope.geolocationUsed){
+		circle.addTo(map);	
+	}
 	marker.addTo(map);
 	map.addLayer(INDIV_MAP);
 	$('#'+mapId).css({'width': '100%'});	
