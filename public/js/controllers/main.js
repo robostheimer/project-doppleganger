@@ -42,7 +42,7 @@ function($http, $q, CityFind) {
 			});
 			
 			return deferred.promise;
-		}
+		},
 	};
 }])
 
@@ -111,6 +111,7 @@ function($http, $q, CityFind) {
 			$rootScope.geolocation.lon = data.lon;
 			$rootScope.geolocation.orig_lat = data.lat;
 			$rootScope.geolocation.orig_lon = data.lon;
+			$rootScope.geolocation.city_state = data.city+', '+data.state;
 			$scope.whereyouare = data.city+', '+data.state;
 			$scope.geolocationUsed = true;
 			$scope.addTypeahead=true;
@@ -143,7 +144,7 @@ function($http, $q, CityFind) {
 	 			} else {
 	 				//$rootScope.geolocation .together = ""
 	 				
-	 				if($rootScope.geolocation.together === "" || $rootScope.geolocation.together === undefined) {
+	 				if($rootScope.geolocation.together === "" || $rootScope.geolocation.together === undefined || $rootScope.geolocation.city_state!==location) {
 						$rootScope.geolocation.together = result.businesses[0].location.coordinate.latitude +', '+result.businesses[0].location.coordinate.longitude;
 						$rootScope.geolocation.lat = result.businesses[0].location.coordinate.latitude;
 						$rootScope.geolocation.lon = result.businesses[0].location.coordinate.longitude;
@@ -204,7 +205,7 @@ function($http, $q, CityFind) {
 					 			}	else {
 					 				//$rootScope.geolocation .together = ""
 					 				
-					 				if($rootScope.geolocation.together === "" || $rootScope.geolocation.together === undefined) {
+					 				if($rootScope.geolocation.together === "" || $rootScope.geolocation.together === undefined || $rootScope.geolocation.city_state!==destination) {
 										$rootScope.geolocation.together = moredata.businesses[0].location.coordinate.latitude +', '+moredata.businesses[0].location.coordinate.longitude;
 										$rootScope.geolocation.lat = moredata.businesses[0].location.coordinate.latitude;
 										$rootScope.geolocation.lon = moredata.businesses[0].location.coordinate.longitude;
@@ -226,7 +227,7 @@ function($http, $q, CityFind) {
 					 			}	
 					 			//add another check to rank results - basically re run SearchYelp.searchYelp for city of place you like to with the top three results to see if place you like is actually a doppleganger
 					 			// for(var i=0; i<3; i++){
-					 			// 	$scope.reRunBusinessSearch(moredata.businesses[i].name+' '+categoriesStr, location, destination);
+					 			// 	$scope.reRunBusinessSearch(moredata.businesses[i].name, location, destination, categoriesStr);
 					 			// }
 
 				 			});		
@@ -236,7 +237,70 @@ function($http, $q, CityFind) {
 		}
 	};
 
-	
+	$scope.reRunBusinessSearch = function(searchterms, destination, location) {
+		
+		console.log(searchterms)
+		
+		if((searchterms !== undefined && searchterms !== "") && (location !== undefined && location !== "")  && (destination !== undefined && destination !== ""))
+		{
+			// $scope.searching = true;
+			// $scope.loading = true;
+			SearchYelp.searchYelp(searchterms, location).then(function(result) {
+
+	 		if(result.businesses.length === 0)
+	 			{
+	 				// $scope.noBusinesses=true;
+	 				// $scope.searching = false;
+	 				// $scope.loading = false;
+	 			}
+	 			else {
+			 		var id =result.businesses[0].id
+			 		SearchYelp.searchYelpBusiness(id).then(function(data) {
+				 			
+				 			var categoriesStr = ''
+				 			data.categories.forEach(function(item) {
+				 				if(item)
+				 				categoriesStr+= item[0]+' '
+				 			})
+				 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata) {
+				 				
+								if(result.businesses.length == 0)
+					 			{
+					 				$scope.noBusinesses=true;
+					 				$scope.searching = false;
+					 				$scope.loading = false;
+					 			}	else {
+					 				//$rootScope.geolocation .together = ""
+					 				
+					 			// 	if($rootScope.geolocation.together === "" || $rootScope.geolocation.together === undefined) {
+									// 	$rootScope.geolocation.together = moredata.businesses[0].location.coordinate.latitude +', '+moredata.businesses[0].location.coordinate.longitude;
+									// 	$rootScope.geolocation.lat = moredata.businesses[0].location.coordinate.latitude;
+									// 	$rootScope.geolocation.lon = moredata.businesses[0].location.coordinate.longitude;
+									// 	$rootScope.geolocation.orig_lat = moredata.businesses[0].location.coordinate.latitude;
+									// 	$rootScope.geolocation.orig_lon = moredata.businesses[0].location.coordinate.longitude;
+									// }
+					 				
+					 				// $scope.placesyoulike_results = moredata.businesses;
+					 				// $scope.searching = false;
+					 				// $scope.loading = false;
+					 				// $scope.enableButtons($scope.viewIcons);
+					 				
+					 				// moredata.businesses.forEach(function(item) {
+				 					// 	item.showIndivMap = false;
+				 					// 	item.timesShowed = 0;
+				 					// 	$rootScope.markers.push(item);
+				 					// });
+				 					//$scope.markers_holder = $rootScope.markers;//creates a cache of the markers
+					 			}	
+					 			//add another check to rank results - basically re run SearchYelp.searchYelp for city of place you like to with the top three results to see if place you like is actually a doppleganger
+					 			
+				 			});		
+				 		});
+			 		} 
+			 });	
+		}
+	};
+
 /**
 	TODO: Filter by geolocation, rating, # of reviews
 	Make the form inputs more friendly on a phone/think about design (cards with images?)
