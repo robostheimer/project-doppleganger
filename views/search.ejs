@@ -128,7 +128,7 @@
                     </div>
                 </div>
                  <div class="indiv-map" ng-class="{hidden: item.showIndivMap == false}" >
-                   <button class="map-close icon-uni78" ng-click="hideIndivMap($index)"></button>
+                   <button class="map-close icon-uni78" ng-click="hideIndivMap($index, 'place')"></button>
                     <div id="place{{$index}}" class="indiv-map-container"></div>
                 </div> 
             </div>
@@ -153,7 +153,7 @@
                     </div>
                 </div>
                 <div class="indiv-map" ng-class="{hidden: item.showIndivMap == false}">
-                    <button class="map-close icon-uni78" ng-click="hideIndivMap($index)"></button>
+                    <button class="map-close icon-uni78" ng-click="hideIndivMap($index, 'keyword')"></button>
                     <div id="keyword{{$index}}" class="indiv-map-container"></div>
                 </div>
             </div> 

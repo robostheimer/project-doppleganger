@@ -333,7 +333,13 @@ function($http, $q, CityFind) {
 	}
 
 	$scope.hideIndivMap = function(index, type) {
-			$scope.placesyoulike_results[index].showIndivMap = false;
+		if(type ==='place')
+		{
+		$scope.placesyoulike_results[index].showIndivMap = false;
+		}
+		else {
+			$scope.keyword_results[index].showIndivMap = false;
+		}
 	}
 
 
