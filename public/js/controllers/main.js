@@ -66,7 +66,6 @@ function($http, $q, CityFind) {
 
 .controller('getYelpResults', ['$scope','$rootScope','$http','SearchYelp', 'Geolocation', '$q',
 	function($scope, $rootScope, $http, SearchYelp, Geolocation, GeolocationFind, $q) {	 
-
 	$scope.places = true;
 	$scope.keywords = false;
 	$scope.placesButtonState ='off';
@@ -188,13 +187,13 @@ function($http, $q, CityFind) {
 	 			}
 	 			else {
 			 		var id =result.businesses[0].id
-			 		SearchYelp.searchYelpBusiness(id).then(function(data) {
-				 			
-				 			var categoriesStr = ''
+			 		SearchYelp.searchYelpBusiness(id).then(function(data) {		
+				 			var categoriesStr = '',
+				 			placesCategoriesStr = '';
 				 			data.categories.forEach(function(item) {
-				 				categoriesStr+= item[0]+' '
+				 				categoriesStr+= item[0]+' ';
 				 			});
-				 			console.log(categoriesStr)
+
 				 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata) {
 				 				
 								if(result.businesses.length == 0)
@@ -203,8 +202,7 @@ function($http, $q, CityFind) {
 					 				$scope.searching = false;
 					 				$scope.loading = false;
 					 			}	else {
-					 				//$rootScope.geolocation .together = ""
-					 				
+
 					 				if($rootScope.geolocation.together === "" || $rootScope.geolocation.together === undefined || $rootScope.geolocation.city_state!==destination) {
 										$rootScope.geolocation.together = moredata.businesses[0].location.coordinate.latitude +', '+moredata.businesses[0].location.coordinate.longitude;
 										$rootScope.geolocation.lat = moredata.businesses[0].location.coordinate.latitude;
@@ -213,12 +211,21 @@ function($http, $q, CityFind) {
 										$rootScope.geolocation.orig_lon = moredata.businesses[0].location.coordinate.longitude;
 									}
 					 				
-					 				$scope.placesyoulike_results = moredata.businesses;
-					 				$scope.searching = false;
-					 				$scope.loading = false;
+					 				//$scope.placesyoulike_results = moredata.businesses;
+					 				
 					 				$scope.enableButtons($scope.viewIcons);
 					 				
 					 				moredata.businesses.forEach(function(item) {
+					 					var o = moredata.businesses.indexOf(item)
+					 					data.categories.forEach(function(second_item){
+					 						if(item.categories[0][0] === second_item[0]) {
+					 							if(!placesCategoriesStr.match(second_item[0]))
+					 							{
+					 								placesCategoriesStr += item.categories[0][0]; 
+					 							}
+					 						}
+					 					});
+					 					item.rank = o;
 				 						item.showIndivMap = false;
 				 						item.timesShowed = 0;
 				 						$rootScope.markers.push(item);
@@ -226,10 +233,10 @@ function($http, $q, CityFind) {
 				 					$scope.markers_holder = $rootScope.markers;//creates a cache of the markers
 					 			}	
 					 			//add another check to rank results - basically re run SearchYelp.searchYelp for city of place you like to with the top three results to see if place you like is actually a doppleganger
-					 			// for(var i=0; i<3; i++){
-					 			// 	$scope.reRunBusinessSearch(moredata.businesses[i].name, location, destination, categoriesStr);
-					 			// }
-
+					 			
+								$scope.reOrderBusinesses(moredata.businesses, location, destination, placesCategoriesStr, result.businesses[0].name);
+							
+						 		
 				 			});		
 				 		});
 			 		} 
@@ -237,67 +244,44 @@ function($http, $q, CityFind) {
 		}
 	};
 
-	$scope.reRunBusinessSearch = function(searchterms, destination, location) {
-		
-		console.log(searchterms)
-		
-		if((searchterms !== undefined && searchterms !== "") && (location !== undefined && location !== "")  && (destination !== undefined && destination !== ""))
+	$scope.reOrderBusinesses = function(arr, destination, location, categoriesStr, orig_searchterms) {
+		if(arr.length>0)
 		{
-			// $scope.searching = true;
-			// $scope.loading = true;
-			SearchYelp.searchYelp(searchterms, location).then(function(result) {
-
-	 		if(result.businesses.length === 0)
-	 			{
-	 				// $scope.noBusinesses=true;
-	 				// $scope.searching = false;
-	 				// $scope.loading = false;
-	 			}
-	 			else {
-			 		var id =result.businesses[0].id
-			 		SearchYelp.searchYelpBusiness(id).then(function(data) {
-				 			
-				 			var categoriesStr = ''
-				 			data.categories.forEach(function(item) {
-				 				if(item)
-				 				categoriesStr+= item[0]+' '
-				 			})
-				 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata) {
-				 				
-								if(result.businesses.length == 0)
-					 			{
-					 				$scope.noBusinesses=true;
-					 				$scope.searching = false;
-					 				$scope.loading = false;
-					 			}	else {
-					 				//$rootScope.geolocation .together = ""
-					 				
-					 			// 	if($rootScope.geolocation.together === "" || $rootScope.geolocation.together === undefined) {
-									// 	$rootScope.geolocation.together = moredata.businesses[0].location.coordinate.latitude +', '+moredata.businesses[0].location.coordinate.longitude;
-									// 	$rootScope.geolocation.lat = moredata.businesses[0].location.coordinate.latitude;
-									// 	$rootScope.geolocation.lon = moredata.businesses[0].location.coordinate.longitude;
-									// 	$rootScope.geolocation.orig_lat = moredata.businesses[0].location.coordinate.latitude;
-									// 	$rootScope.geolocation.orig_lon = moredata.businesses[0].location.coordinate.longitude;
-									// }
-					 				
-					 				// $scope.placesyoulike_results = moredata.businesses;
-					 				// $scope.searching = false;
-					 				// $scope.loading = false;
-					 				// $scope.enableButtons($scope.viewIcons);
-					 				
-					 				// moredata.businesses.forEach(function(item) {
-				 					// 	item.showIndivMap = false;
-				 					// 	item.timesShowed = 0;
-				 					// 	$rootScope.markers.push(item);
-				 					// });
-				 					//$scope.markers_holder = $rootScope.markers;//creates a cache of the markers
-					 			}	
-					 			//add another check to rank results - basically re run SearchYelp.searchYelp for city of place you like to with the top three results to see if place you like is actually a doppleganger
-					 			
-				 			});		
-				 		});
-			 		} 
-			 });	
+			var contain_arr = [],
+			o=0,
+			j=0
+			lngth = arr.length;
+			arr.forEach(function(item) {
+				SearchYelp.searchYelp(item.name, location).then(function(result) {
+		 			SearchYelp.searchYelpBusiness(result.businesses[0].id).then(function(data) {
+			 			var categoriesStr = ''
+			 			data.categories.forEach(function(item) {
+			 				categoriesStr+= item[0]+' ';
+			 			})
+			 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata) {
+			 				var i;
+			 				for(i=0; i<moredata.businesses.length; i++) {
+			 					j++
+			 					if(moredata.businesses[i].name === orig_searchterms)
+			 					{
+				 					o--
+				 					result.businesses[0].rank=o
+				 					arr.splice(0, 0, result.businesses[0]);
+				 					arr = arr.removeDuplicatesArrObj('id', true)
+				 					$scope.placesyoulike_results = arr;
+			 						result.businesses[0].showIndivMap = false;
+			 						result.businesses[0].timesShowed = 0;	
+			 					}
+			 					else {
+			 						$scope.placesyoulike_results = arr;
+			 					}	
+			 				}
+			 			});		
+			 		});
+			 	})	
+			})
+			$scope.searching = false;
+			$scope.loading = false;
 		}
 	};
 
@@ -315,7 +299,6 @@ function($http, $q, CityFind) {
 
 	$scope.showIndivMap = function(index, type) {
 		if(type == 'place') {
-			console.log($scope.placesyoulike_results[index].timesShowed)
 			$scope.placesyoulike_results[index].showIndivMap = true;
 			if($scope.placesyoulike_results[index].timesShowed === 0)
 			{
@@ -404,7 +387,7 @@ $scope.createIndivMap = function(item, index, type) {
 				    fillColor: '#428bca',
 				    fillOpacity: 0.15
 					})
-	marker_content = '<b>'+index+1.+' <a href="'+item.url+'" target="_blank">'+item.name+'</a></b><br>'+item.location.address[0]+'<br>'+item.location.city+'<br><a href="tel://'+item.display_phone+'">'+item.display_phone+'</a><br><img src="'+item.rating_img_url+'" alt="'+item.rating+' stars">', 
+	marker_content = '<a href="'+item.url+'" target="_blank">'+item.name+'</a><<br>'+item.location.address[0]+'<br>'+item.location.city+'<br><a href="tel://'+item.display_phone+'">'+item.display_phone+'</a><br><img src="'+item.rating_img_url+'" alt="'+item.rating+' stars">', 
 	
 	marker = L.marker([item.location.coordinate.latitude, item.location.coordinate.longitude]).bindPopup(marker_content);
 	
@@ -489,7 +472,7 @@ $scope.createIndivMap = function(item, index, type) {
       		var i =0
       		$rootScope.markers.forEach(function(marker) {
       		i++
-					marker_content='<b>'+i+' <a href="'+marker.url+'" target="_blank">'+marker.name+'</a></b><br>'+marker.location.address[0]+'<br>'+marker.location.city+'<br><a href="tel://'+marker.display_phone+'">'+marker.display_phone+'</a><br><img src="'+marker.rating_img_url+'" alt="'+marker.rating+' stars">';
+					marker_content='<a href="'+marker.url+'" target="_blank">'+marker.name+'</a><br>'+marker.location.address[0]+'<br>'+marker.location.city+'<br><a href="tel://'+marker.display_phone+'">'+marker.display_phone+'</a><br><img src="'+marker.rating_img_url+'" alt="'+marker.rating+' stars">';
 					markers.push(L.marker([marker.location.coordinate.latitude, marker.location.coordinate.longitude]).bindPopup(marker_content));
 					});
        	}
