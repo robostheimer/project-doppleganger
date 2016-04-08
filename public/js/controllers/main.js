@@ -212,7 +212,6 @@ function($http, $q, CityFind) {
 									}
 					 				
 					 				//$scope.placesyoulike_results = moredata.businesses;
-					 				
 					 				$scope.enableButtons($scope.viewIcons);
 					 				
 					 				moredata.businesses.forEach(function(item) {
@@ -235,7 +234,6 @@ function($http, $q, CityFind) {
 					 			//add another check to rank results - basically re run SearchYelp.searchYelp for city of place you like to with the top three results to see if place you like is actually a doppleganger
 					 			
 								$scope.reOrderBusinesses(moredata.businesses, location, destination, placesCategoriesStr, result.businesses[0].name);
-							
 						 		
 				 			});		
 				 		});
@@ -252,6 +250,7 @@ function($http, $q, CityFind) {
 			j=0
 			lngth = arr.length;
 			arr.forEach(function(item) {
+
 				SearchYelp.searchYelp(item.name, location).then(function(result) {
 		 			SearchYelp.searchYelpBusiness(result.businesses[0].id).then(function(data) {
 			 			var categoriesStr = ''
@@ -260,28 +259,34 @@ function($http, $q, CityFind) {
 			 			})
 			 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata) {
 			 				var i;
+
 			 				for(i=0; i<moredata.businesses.length; i++) {
 			 					j++
+
 			 					if(moredata.businesses[i].name === orig_searchterms)
 			 					{
 				 					o--
-				 					result.businesses[0].rank=o
+				 					result.businesses[0].rank=o;
+				 					result.businesses[0].showIndivMap = false;
+				 					result.businesses[0].timesShowed = 0;
 				 					arr.splice(0, 0, result.businesses[0]);
-				 					arr = arr.removeDuplicatesArrObj('id', true)
-				 					$scope.placesyoulike_results = arr;
-			 						result.businesses[0].showIndivMap = false;
-			 						result.businesses[0].timesShowed = 0;	
+				 					
+				 					
 			 					}
-			 					else {
-			 						$scope.placesyoulike_results = arr;
-			 					}	
+			 					if(j==moredata.businesses.length*lngth)
+				 					{
+					 					arr = arr.removeDuplicatesArrObj('id', true)
+					 					$scope.placesyoulike_results = arr;
+				 						$scope.searching = false;
+					 					$scope.loading = false;
+			 						}
 			 				}
 			 			});		
 			 		});
 			 	})	
 			})
-			$scope.searching = false;
-			$scope.loading = false;
+			//remove Duplicates and keep lower ranked 
+			//problem with sorting algorithm in prototypes.js
 		}
 	};
 
@@ -387,7 +392,7 @@ $scope.createIndivMap = function(item, index, type) {
 				    fillColor: '#428bca',
 				    fillOpacity: 0.15
 					})
-	marker_content = '<a href="'+item.url+'" target="_blank">'+item.name+'</a><<br>'+item.location.address[0]+'<br>'+item.location.city+'<br><a href="tel://'+item.display_phone+'">'+item.display_phone+'</a><br><img src="'+item.rating_img_url+'" alt="'+item.rating+' stars">', 
+	marker_content = '<a href="'+item.url+'" target="_blank">'+item.name+'</a><br>'+item.location.address[0]+'<br>'+item.location.city+'<br><a href="tel://'+item.display_phone+'">'+item.display_phone+'</a><br><img src="'+item.rating_img_url+'" alt="'+item.rating+' stars">', 
 	
 	marker = L.marker([item.location.coordinate.latitude, item.location.coordinate.longitude]).bindPopup(marker_content);
 	
