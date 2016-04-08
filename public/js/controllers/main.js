@@ -248,7 +248,7 @@ function($http, $q, CityFind) {
 			var contain_arr = [],
 			o=0,
 			j=0
-			lngth = arr.length;
+			lngth = 0;
 			arr.forEach(function(item) {
 
 				SearchYelp.searchYelp(item.name, location).then(function(result) {
@@ -259,21 +259,21 @@ function($http, $q, CityFind) {
 			 			})
 			 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata) {
 			 				var i;
-
+			 				lngth+=moredata.businesses.length
+			 				
 			 				for(i=0; i<moredata.businesses.length; i++) {
 			 					j++
-
 			 					if(moredata.businesses[i].name === orig_searchterms)
 			 					{
 				 					o--
-				 					result.businesses[0].rank=o;
+				 					result.businesses[0].rank=o
 				 					result.businesses[0].showIndivMap = false;
 				 					result.businesses[0].timesShowed = 0;
 				 					arr.splice(0, 0, result.businesses[0]);
 				 					
 				 					
 			 					}
-			 					if(j==moredata.businesses.length*lngth)
+			 					if(j==lngth)
 				 					{
 					 					arr = arr.removeDuplicatesArrObj('id', true)
 					 					$scope.placesyoulike_results = arr;
