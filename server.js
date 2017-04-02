@@ -4,7 +4,11 @@
 // get all the tools we need
 var express  = require('express');
 var app      = express();
-var port     = process.env.PORT || 8080;
+var https = require('https');
+var fs = require('fs');
+
+var PORT = process.env.PORT || 8080;
+var HOST = process.env.HOST || '';
 var mongoose = require('mongoose');
 var passport = require('passport');
 var flash    = require('connect-flash');
@@ -17,6 +21,8 @@ var session      = require('express-session');
 var configDB = require('./config/database.js');
 var methodOverride = require('method-override');
 var Yelp = require('yelp');
+var https = require('https');
+
 
 
 
@@ -49,8 +55,16 @@ app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-M
 require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
 // launch ======================================================================
-app.listen(port);
-console.log('The magic happens on port ' + port);
+var options = {
+    key  : fs.readFileSync('ssl/key.pem'),
+    ca   : fs.readFileSync('ssl/csr.pem'),
+    cert : fs.readFileSync('ssl/cert.pem')
+}
+
+https.createServer(options, app).listen(PORT, HOST, null, function() {
+    console.log('Server listening on port %d in %s mode', this.address().port, app.settings.env);
+});
+
 
 // var yelp = new Yelp({
 //   consumer_key: 'grFTF3Rp5lm-RlkHQ_WbHw',

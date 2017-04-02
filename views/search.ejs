@@ -15,10 +15,10 @@
 
     <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
     <link href='https://fonts.googleapis.com/css?family=Raleway:400,500,400italic,500italic,600,600italic,700,700italic|Cabin:400,400italic,500,500italic,600,600italic,700,700italic|Oxygen:400,300,700|PT+Sans+Narrow:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/doppleganger.css">
     <link rel="stylesheet" href="css/fonts.css">
-    
+
     <link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="apple-icon-72x72.png">
@@ -33,10 +33,10 @@
     <link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="manifest" href="/manifest.json">
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css" />
 
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.2/angular.min.js"></script><!-- load angular -->
     <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI="   crossorigin="anonymous"></script>
 
@@ -53,19 +53,19 @@
 
         <div class="jumbotron text-center">
             <div class="icon-Logo logo"></div>
-            
+
         </div>
         <div class="tabs">
             <button class="btn btn-primary btn-lg {{keywordsButtonState}}" ng-click="showKeywords()">Find Your Doppleganger</button><button class="btn btn-primary btn-lg {{placesButtonState}}" ng-click="showPlaces()" >I'm Here, Now What?</button>
-            
+
         </div>
-        
+
         <div class="filters">
                 <button ng-repeat="item in viewIcons" class="{{item.name}} {{item.state}} {{item.status}} big-icon" ng-click="changeView(item.name)"></button>
                 <!-- <button ng-repeat="item in filterIcons" class="{{item.name}} {{item.state}} big-icon" ng-click="runFilters(item.name)"></button> -->
 
         </div>
-        
+
         <div id="list-of-places">
         <div class="cssload-container" ng-show="loading == true">
                 <div class="cssload-whirlpool"></div>
@@ -85,7 +85,7 @@
                 </form>
             </div>
         </div>
-       
+
          <div id="keyword-based-form" class="row" ng-hide="keywords==false" >
             <div class="col-sm-8 col-sm-offset-2 text-center">
                 <form>
@@ -101,14 +101,14 @@
             </div>
         </div>
         </header>
-         <section class="map {{viewIcons[0].class}}" ng-hide="noMap==true">  
+         <section class="map {{viewIcons[0].class}}" ng-hide="noMap==true">
             <dg-map id="map" latitude="{{geolocation.lat}}" longitude="{{geolocation.lon}}" change="{{searching}}" >
             </dg-map>
         </section>
         <section class="boxes {{viewIcons[1].class}}">
          <div class="rows" id="places" ng-show="noBusinesses == false"  ng-hide="places==false">
-            <h2 ng-hide="noBusinesses==false">There are no businesses that meet your search.</h2> 
-            
+            <h2 ng-hide="noBusinesses==false">There are no businesses that meet your search.</h2>
+
             <div ng-repeat="item in placesyoulike_results" class="place" ng-hide="places==false || searching==true" number="{{index+1}}" name="{{item.name}}" street-address="{{item.location.address[0]}}" city="{{item.location.city}}" tel="{{item.display_phone}}" stars="{{item.rating_img_url}}">
                 <header ng-class="{hidden: item.showIndivMap == true}">
                     <div class="image">
@@ -130,7 +130,7 @@
                  <div class="indiv-map" ng-class="{hidden: item.showIndivMap == false}" >
                    <button class="map-close icon-uni78" ng-click="hideIndivMap($index, 'place')"></button>
                     <div id="place{{$index}}" class="indiv-map-container"></div>
-                </div> 
+                </div>
             </div>
         </div>
         <div class="rows" id="keywords" ng-show="noBusinesses == false"   ng-hide="keywords==false">
@@ -147,7 +147,7 @@
                        {{item.location.address[0]}}
                         <br>{{item.location.city}}
                         <br><a href="tel://{{item.display_phone}}">{{item.display_phone}}</a>
-                        <br>Category: <span class="category" ng-repeat="cat in item.categories">{{cat[0]}}</span> 
+                        <br>Category: <span class="category" ng-repeat="cat in item.categories">{{cat[0]}}</span>
                         <br><img src="{{item.rating_img_url}}" alt="{{item.rating}} stars">
                         <button class="icon-map icon off"  ng-click="showIndivMap($index, 'keyword');" ></button>
                     </div>
@@ -156,21 +156,21 @@
                     <button class="map-close icon-uni78" ng-click="hideIndivMap($index, 'keyword')"></button>
                     <div id="keyword{{$index}}" class="indiv-map-container"></div>
                 </div>
-            </div> 
+            </div>
         </div>
     </section>
     <br>
     <br>
     <br>
     <br>
-    
+
      <footer>
          <p>From <a href="http://cityblinking.com">Big City Blinking</a></p>
          <p><a href="http://twitter.com/robostheimer">@robostheimer</a></p>
          <p>Powered By <a href="https://www.yelp.com/developers" target="_blank">Yelp API</a></p>
     </footer>
-        
+
     </div>
-   
+
 </body>
 </html>
