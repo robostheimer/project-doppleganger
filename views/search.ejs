@@ -101,7 +101,7 @@
             </div>
         </div>
         </header>
-         <section class="map {{viewIcons[0].class}}" ng-hide="noMap==true">
+         <section class="map {{viewIcons[0].class}}" ng-hide="noMap==true  || loading==true">
             <dg-map id="map" latitude="{{geolocation.lat}}" longitude="{{geolocation.lon}}" change="{{searching}}" >
             </dg-map>
         </section>
