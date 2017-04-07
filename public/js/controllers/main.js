@@ -34,7 +34,7 @@ function($http, $q, CityFind) {
 		checkGeolocation: function() {
 			var deferred = $q.defer();
 			navigator.geolocation.getCurrentPosition(function(data){
-					CityFind.findCity(data.coords.latitude, data.coords.longitude, .01).then(function(location){
+					CityFind.findCity(data.coords.latitude, data.coords.longitude, .05).then(function(location){
 						deferred.resolve({lat: data.coords.latitude, lon: data.coords.longitude, city:location.city, state: location.state});
 				})	
 			}, function(error){
