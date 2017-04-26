@@ -440,15 +440,13 @@ $scope.createIndivMap = function(item, index, type) {
 	//});
 			//var Esri_WorldTopoMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri&mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
 
-			var MAP = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-				subdomains: '1234',
-				mapID: 'newest',
-				app_id: 'Y8m9dK2brESDPGJPdrvs',
-				app_code: 'dq2MYIvjAotR8tHvY8Q_Dg',
-				base: 'base',
+			var MAP = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.{ext}', {
+				attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+				subdomains: 'abcd',
 				minZoom: 0,
-				maxZoom: 20
-				});
+				maxZoom: 20,
+				ext: 'png'
+			});
 			var marker_content = '';
 
 			map.addLayer(MAP);
