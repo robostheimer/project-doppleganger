@@ -1,13 +1,10 @@
 // app/routes.js
 
 var Todo = require('./models/todo');
-var Yelp = require("yelp");
-var yelp = new Yelp({
-  consumer_key: 'grFTF3Rp5lm-RlkHQ_WbHw',
-  consumer_secret: 'R4owE3xsHMrtu4jewQ9nQ9LDiQI',
-  token: 'viwvax3IRWW935j8jSXgcVlfezsHqZUV',
-  token_secret: 'uHb3OUy_5XfC71gjTO6Mk6swTMA',
-});
+var Yelp = require('yelpv3')
+var yelp = new Yelp();
+var apiKey = 'GVOHt9AqIn5o8GUQsl54CUXp13GbHW58f7xCbsyyxwdYH713DdLzokdGdMjXRbr5jsvnL9C_Tt3Bu0RvAGNXR_G4SBSuWABtubWuzbg9uh-ETCfIgtMflK55MmxjW3Yx';
+
 function getTodos(res){
     Todo.find(function(err, todos) {
 
@@ -23,6 +20,7 @@ module.exports = function(app, passport) {
     // =====================================
     // CORS ================================
     // =====================================
+
     app.use(function(req, res, next) {
       res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -108,26 +106,20 @@ module.exports = function(app, passport) {
     // YELP API=============================
     // =====================================
 
-     app.get('/api/yelp/search', function(req, res) {
-        if(req.query.ll!=undefined) {
-        yelp.search({ term: req.query.term, ll: req.query.ll, limit: req.query.limit})
-         .then(function (data) {
-           res.json(data)
-         });
-        } else {
-        yelp.search({ term: req.query.term, location: req.query.location, limit: req.query.limit})
-         .then(function (data) {
-           res.json(data)
-         });
-
-        }
-        // });
+    app.get('/api/yelp/search', function(req, res) {
+         yelp.search({ term: req.query.term, location: req.query.location, latitude: req.query.lat,  longitude: req.query.lng, limit: 10, token: apiKey })
+            .then(function (data) {
+                res.send(data);
+            })
+            .catch(function (err) {
+                res.send(err.error);
+            });
     });
 
      app.get('/api/yelp/business', function(req, res){
-        yelp.business(req.query.name)
+        yelp.business({id: req.query.id, token: apiKey})
           .then(function(data){
-            res.json(data);
+            res.send(data);
           })
      })
 

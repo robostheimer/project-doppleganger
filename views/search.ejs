@@ -122,8 +122,8 @@
                         {{item.location.address[0]}}
                         <br>{{item.location.city}}
                         <br><a href="tel://{{item.display_phone}}">{{item.display_phone}}</a>
-                        <br>Category: <span class="category" ng-repeat="cat in item.categories">{{cat[0]}}</span>
-                        <br><img src="{{item.rating_img_url}}" alt="{{item.rating}} stars">
+                        <br>Category: <span class="category" ng-repeat="cat in item.categories">{{cat.title}}</span>
+                        <br>{{item.rating}} stars
                         <button class="icon-map icon off"  ng-click="showIndivMap($index, 'place');" ></button>
                     </div>
                 </div>
@@ -147,8 +147,8 @@
                        {{item.location.address[0]}}
                         <br>{{item.location.city}}
                         <br><a href="tel://{{item.display_phone}}">{{item.display_phone}}</a>
-                        <br>Category: <span class="category" ng-repeat="cat in item.categories">{{cat[0]}}</span>
-                        <br><img src="{{item.rating_img_url}}" alt="{{item.rating}} stars">
+                        <br>Category: <span class="category" ng-repeat="cat in item.categories">{{cat.title}}</span>
+                        <br>{{item.rating}} stars
                         <button class="icon-map icon off"  ng-click="showIndivMap($index, 'keyword');" ></button>
                     </div>
                 </div>

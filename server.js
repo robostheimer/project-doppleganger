@@ -18,16 +18,16 @@ var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
 var session      = require('express-session');
 
-var configDB = require('./config/database.js');
+//var configDB = require('./config/database.js');
 var methodOverride = require('method-override');
-var Yelp = require('yelp');
+var Yelp = require('yelpv3')
 var https = require('https');
 
 
 
 
 // configuration ===============================================================
-mongoose.connect(configDB.url); // connect to our database
+//mongoose.connect(configDB.url); // connect to our database
 
 require('./config/passport')(passport); // pass passport for configuration
 
@@ -64,6 +64,9 @@ var options = {
 https.createServer(options, app).listen(PORT, HOST, null, function() {
     console.log('Server listening on port %d in %s mode', this.address().port, app.settings.env);
 });
+
+
+
 
 
 // var yelp = new Yelp({

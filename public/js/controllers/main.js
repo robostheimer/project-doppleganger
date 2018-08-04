@@ -1,27 +1,60 @@
+// Client ID
+// 7eX8uXkCY5vRI0f4RHxcag
+
+// API Key
+// GVOHt9AqIn5o8GUQsl54CUXp13GbHW58f7xCbsyyxwdYH713DdLzokdGdMjXRbr5jsvnL9C_Tt3Bu0RvAGNXR_G4SBSuWABtubWuzbg9uh - ETCfIgtMflK55MmxjW3Yx
+
+// To authenticate API calls with the API Key, set the Authorization HTTP header value as Bearer API_KEY.
+// like spotify
+
+// const url = `https://api.yelp.com/v3/categories/{title}`
+// return $http({
+// 	url: url,
+// 	method: 'get',
+// 	headers: {
+// 		'Authorization': `Bearer GVOHt9AqIn5o8GUQsl54CUXp13GbHW58f7xCbsyyxwdYH713DdLzokdGdMjXRbr5jsvnL9C_Tt3Bu0RvAGNXR_G4SBSuWABtubWuzbg9uh-ETCfIgtMflK55MmxjW3Yx`
+// 	}
+
+//
+
 var Doppleganger = angular.module('Doppleganger', ['ngRoute']);
+var AUTH_HEADER = 'Bearer GVOHt9AqIn5o8GUQsl54CUXp13GbHW58f7xCbsyyxwdYH713DdLzokdGdMjXRbr5jsvnL9C_Tt3Bu0RvAGNXR_G4SBSuWABtubWuzbg9uh - ETCfIgtMflK55MmxjW3Yx' 
 angular.module('Ganger', [])
 
 .factory('SearchYelp', ['$http', '$rootScope',
 	function($http, $rootScope) {
+		
 		return {
 			searchYelp: function(searchterms, location) {
 
 				if($rootScope.geolocation) {
-				return $http.get('/api/yelp/search?term='+searchterms+'&location='+location+'&cll='+$rootScope.geolocation.together+'&limit=10').then(function(result) {
-
-					return result.data;
+					var url = 'api/yelp/search?term=' + searchterms + '&location=' + location + '&lat=' + $rootScope.geolocation.lat + '&lng=' + $rootScope.geolocation.lon; 
+					return $http({
+						url: url,
+						method: 'get',
+						cache:true,
+						headers: {
+							Authorization: AUTH_HEADER
+						}
+					})
+					.then(function(result) {
+						return result.data;
 				});
 			} else {
-					return $http.get('/api/yelp/search/?term='+searchterms+'&location='+location+'&limit=10').then(function(result) {
-
+					var url = 'api/yelp/search?term=' + searchterms + '&location=' + location; 
+					return $http({
+						url: 'https://api.yelp.com/v3/businesses/search?term='+searchterms+'&location='+location+'&limit=10',
+						method: 'jsonp',
+						headers: AUTH_HEADER
+					})
+					.then(function(result) {
 						return result.data;
 				});
 			}
 		},
 
 			searchYelpBusiness: function(id) {
-				return $http.get('/api/yelp/business/?name='+id).then(function(result) {
-
+				return $http.get('/api/yelp/business?id='+id).then(function(result) {
 					return result.data;
 			});
 		}
@@ -134,15 +167,12 @@ function($http, $q, CityFind) {
 			$scope.loading = true;
 
 			SearchYelp.searchYelp(searchterms, location).then(function(result) {
-
-
 				if(result.businesses.length === 0)
 	 			{
 	 				$scope.noBusinesses=true;
 	 				$scope.searching = false;
 	 			} else {
 	 				//$rootScope.geolocation .together = ""
-
 	 				if($rootScope.geolocation.together === "" || $rootScope.geolocation.together === undefined || $rootScope.geolocation.city_state!==location) {
 						$rootScope.geolocation.together = result.businesses[0].location.coordinate.latitude +', '+result.businesses[0].location.coordinate.longitude;
 						$rootScope.geolocation.lat = result.businesses[0].location.coordinate.latitude;
@@ -189,11 +219,10 @@ function($http, $q, CityFind) {
 			 		var id =result.businesses[0].id
 			 		SearchYelp.searchYelpBusiness(id).then(function(data) {
 				 			var categoriesStr = '',
-				 			placesCategoriesStr = '';
+							 placesCategoriesStr = '';
 				 			data.categories.forEach(function(item) {
-				 				categoriesStr+= item[0]+' ';
+				 				categoriesStr+= item.title+' ';
 				 			});
-
 				 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata) {
 
 								if(result.businesses.length == 0)
@@ -250,19 +279,19 @@ function($http, $q, CityFind) {
 			j=0
 			lngth = 0;
 			arr.forEach(function(item) {
-
 				SearchYelp.searchYelp(item.name, location).then(function(result) {
 		 			SearchYelp.searchYelpBusiness(result.businesses[0].id).then(function(data) {
 			 			var categoriesStr = ''
 			 			data.categories.forEach(function(item) {
-			 				categoriesStr+= item[0]+' ';
-			 			})
+			 				categoriesStr+= item.title+' ';
+						 })
+			
 			 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata) {
 			 				var i;
 			 				lngth+=moredata.businesses.length
 
 			 				for(i=0; i<moredata.businesses.length; i++) {
-			 					j++
+								 j++
 			 					if(moredata.businesses[i].name === orig_searchterms)
 			 					{
 				 					o--
@@ -390,14 +419,15 @@ $scope.createIndivMap = function(item, index, type) {
 				    fillColor: '#428bca',
 				    fillOpacity: 0.15
 					})
-	marker_content = '<a href="'+item.url+'" target="_blank">'+item.name+'</a><br>'+item.location.address[0]+'<br>'+item.location.city+'<br><a href="tel://'+item.display_phone+'">'+item.display_phone+'</a><br><img src="'+item.rating_img_url+'" alt="'+item.rating+' stars">',
 
-	marker = L.marker([item.location.coordinate.latitude, item.location.coordinate.longitude]).bindPopup(marker_content);
+	marker_content = '<a href="'+item.url+'" target="_blank">'+item.name+'</a><br>'+item.location.address1+'<br>'+item.location.city+'<br><a href="tel://'+item.display_phone+'">'+item.display_phone+'</a><br>'+item.rating+' stars',
+
+	marker = L.marker([item.coordinates.latitude, item.coordinates.longitude]).bindPopup(marker_content);
 
 	map.animate=true;
 	map._zoom = 13	;
 	map.scrollWheelZoom.disable();
-	map.panTo([item.location.coordinate.latitude, item.location.coordinate.longitude]);
+	map.panTo([item.coordinates.latitude, item.coordinates.longitude]);
  	map.zoomControl.options.position='topright';
 	if($scope.geolocationUsed){
 		circle.addTo(map);
@@ -472,9 +502,11 @@ $scope.createIndivMap = function(item, index, type) {
       		markers =[];
       		var i =0
       		$rootScope.markers.forEach(function(marker) {
-      		i++
-					marker_content='<a href="'+marker.url+'" target="_blank">'+marker.name+'</a><br>'+marker.location.address[0]+'<br>'+marker.location.city+'<br><a href="tel://'+marker.display_phone+'">'+marker.display_phone+'</a><br><img src="'+marker.rating_img_url+'" alt="'+marker.rating+' stars">';
-					markers.push(L.marker([marker.location.coordinate.latitude, marker.location.coordinate.longitude]).bindPopup(marker_content));
+					i++
+					
+					marker_content='<a href="'+marker.url+'" target="_blank">'+marker.name+'</a><br>'+marker.location.address1+'<br>'+marker.location.city+'<br><a href="tel://'+marker.display_phone+'">'+marker.display_phone+'</a><br>'+marker.rating+' stars';
+					markers.push(L.marker([marker.coordinates.latitude, marker.coordinates.longitude]).bindPopup(marker_content));
+					//[item.location.coordinate.latitude, item.location.coordinate.longitude
 					});
        	}
 
