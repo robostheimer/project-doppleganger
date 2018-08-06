@@ -124,8 +124,10 @@
                 </header>
                 <div class="description" ng-class="{hidden: item.showIndivMap == true}">
                     <div class="place-block">
-                        
-                        
+                        {{item.location.address[0]}}
+                        <br>{{item.location.city}}
+                        <br><a href="tel://{{item.display_phone}}">{{item.display_phone}}</a>
+
                         <br>Category: <span class="category" ng-repeat="cat in item.categories">{{cat.title}}</span>
                         <br>{{item.rating}} stars
                         <button class="icon-map icon off"  ng-click="showIndivMap($index, 'place');" ></button>

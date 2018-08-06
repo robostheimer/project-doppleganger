@@ -54,7 +54,6 @@ angular.module('Ganger', [])
 						$rootScope.geolocation.orig_lat = result.data.region.center.latitude;
 						$rootScope.geolocation.orig_lon = result.data.region.center.longitude;
 						$rootScope.geolocation.together = result.data.region.center.latitude + ', ' + result.data.region.center.longitude;
-
 						return result.data;
 				});
 			}
@@ -339,39 +338,36 @@ function($http, $q, CityFind) {
 		 			SearchYelp.searchYelpBusiness(result.businesses[0].id).then(function(data) {
 			 			var categoriesStr = ''
 			 			data.categories.forEach(function(item) {
-			 				categoriesStr+= item.title+', ';
+			 				categoriesStr+= item.title+' ';
 						 })
 			
 			 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata) {
-							 debugger;
-			 				if(moredata) {
-								 var i;
-								lngth+=moredata.businesses.length
+			 				var i;
+			 				lngth+=moredata.businesses.length
 
-								for(i=0; i<moredata.businesses.length; i++) {
-									j++
-									if(moredata.businesses[i].name === orig_searchterms)
-									{
-										o--
-										result.businesses[0].rank=o
-										result.businesses[0].showIndivMap = false;
-										result.businesses[0].timesShowed = 0;
-										arr.splice(0, 0, result.businesses[0]);
+			 				for(i=0; i<moredata.businesses.length; i++) {
+								 j++
+			 					if(moredata.businesses[i].name === orig_searchterms)
+			 					{
+				 					o--
+				 					result.businesses[0].rank=o
+				 					result.businesses[0].showIndivMap = false;
+				 					result.businesses[0].timesShowed = 0;
+				 					arr.splice(0, 0, result.businesses[0]);
 
 
-									}
-									if(j==lngth)
-										{
-											arr = arr.removeDuplicatesArrObj('id', true)
-											$scope.placesyoulike_results = arr;
-											$scope.searching = false;
-											$scope.loading = false;
-										}
-								}
-							}
-						});
-					});
-				})
+			 					}
+			 					if(j==lngth)
+				 					{
+					 					arr = arr.removeDuplicatesArrObj('id', true)
+					 					$scope.placesyoulike_results = arr;
+				 						$scope.searching = false;
+					 					$scope.loading = false;
+			 						}
+			 				}
+			 			});
+			 		});
+			 	})
 			})
 			//remove Duplicates and keep lower ranked
 			//problem with sorting algorithm in prototypes.js
