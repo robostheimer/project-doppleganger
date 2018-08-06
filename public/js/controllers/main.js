@@ -275,7 +275,6 @@ function($http, $q, CityFind) {
 				 				categoriesStr+= item.title+' ';
 				 			});
 				 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata) {
-								 debugger;
 								if(result.businesses.length == 0)
 					 			{
 					 				$scope.noBusinesses=true;
