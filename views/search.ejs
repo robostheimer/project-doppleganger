@@ -78,7 +78,7 @@
                         <input type="text" class="form-control input-lg text-center" placeholder="Place You like" ng-model="placeyoulike" ng-change="runBusinessSearch(placeyoulike,city, whereyouare)" ng-model-options="{debounce:500}">
                         <input type="text" class="form-control input-lg text-center" placeholder="City of place you like" ng-model="city" ng-model-options="{debounce:500}" ng-change="runBusinessSearch(placeyoulike,city, whereyouare)" ng-model="city" ng-hide="addTypeahead==true">
                         <input type="text" class="form-control input-lg text-center" placeholder="City of place you like" ng-model="city" ng-hide="addTypeahead==false" ng-change="runBusinessSearch(placeyoulike,city, whereyouare)" ng-model-options="{debounce:500}">
-                        <input type="text" class="form-control input-lg text-center" placeholder="Find the doppleganger in another city" ng-model="whereyouare" ng-change="runBusinessSearch(placeyoulike,city, whereyouare);" ng-model-options="{debounce:500}" >
+                        <input type="text" class="form-control input-lg text-center" placeholder="Find the doppleganger in another city" ng-model="whereyouare" ng-change="runBusinessSearch(placeyoulike,city, whereyouare, true);" ng-model-options="{debounce:500}" >
                     </div>
                     <!-- createToDo() WILL CREATE NEW TODOS -->
                     <!-- <button type="submit" class="btn btn-primary btn-lg" ng-click="runBusinessSearch(placeyoulike,city, destination)">Search</button> -->
@@ -93,7 +93,7 @@
                         <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
                         <input type="text" class="form-control input-lg text-center" placeholder="What Are you looking for?" ng-model="searchterms" ng-model-options="{debounce:500}" ng-change="runSearch(searchterms,whereyouare)" ng-hide="addTypeahead==true">
                         <input type="text" class="form-control input-lg text-center" placeholder="What Are you looking for?" ng-model="searchterms" ng-hide="addTypeahead==false" ng-change="runSearch(searchterms,whereyouare)" ng-model-options="{debounce:500}">
-                        <input type="text" class="form-control input-lg text-center" placeholder="Where are you?" ng-model="whereyouare"  ng-change="runSearch(searchterms,whereyouare)" ng-model-options="{debounce:500}">
+                        <input type="text" class="form-control input-lg text-center" placeholder="Where are you?" ng-model="whereyouare"  ng-change="runSearch(searchterms,whereyouare, true)" ng-model-options="{debounce:500}">
                     </div>
                     <!-- createToDo() WILL CREATE NEW TODOS -->
                     <!-- <button type="submit" class="btn btn-primary btn-lg" ng-click="runSearch(searchterms,location)">Search</button> -->
@@ -115,15 +115,19 @@
                         <img src="{{item.image_url}}" alt="{{item.name}}"/>
                     </div>
                         <h2><span class="number">{{$index+1}}</span> <a href="{{item.url}}" target="_blank">{{item.name}}</a></h2>
-                     <p>{{item.snippet_text}}</p>
+                        <p>{{item.location.address1}}
+                            <br>{{item.location.city}}
+                            <br>
+                            <a href="tel://{{item.display_phone}}">{{item.display_phone}}</a>
+                        </p>
+                        
                 </header>
                 <div class="description" ng-class="{hidden: item.showIndivMap == true}">
                     <div class="place-block">
-                        {{item.location.address[0]}}
-                        <br>{{item.location.city}}
-                        <br><a href="tel://{{item.display_phone}}">{{item.display_phone}}</a>
-                        <br>Category: <span class="category" ng-repeat="cat in item.categories">{{cat[0]}}</span>
-                        <br><img src="{{item.rating_img_url}}" alt="{{item.rating}} stars">
+                        
+                        
+                        <br>Category: <span class="category" ng-repeat="cat in item.categories">{{cat.title}}</span>
+                        <br>{{item.rating}} stars
                         <button class="icon-map icon off"  ng-click="showIndivMap($index, 'place');" ></button>
                     </div>
                 </div>
@@ -147,8 +151,8 @@
                        {{item.location.address[0]}}
                         <br>{{item.location.city}}
                         <br><a href="tel://{{item.display_phone}}">{{item.display_phone}}</a>
-                        <br>Category: <span class="category" ng-repeat="cat in item.categories">{{cat[0]}}</span>
-                        <br><img src="{{item.rating_img_url}}" alt="{{item.rating}} stars">
+                        <br>Category: <span class="category" ng-repeat="cat in item.categories">{{cat.title}}</span>
+                        <br>{{item.rating}} stars
                         <button class="icon-map icon off"  ng-click="showIndivMap($index, 'keyword');" ></button>
                     </div>
                 </div>

@@ -121,13 +121,14 @@ a:visited {
   left: 0;
   height: 100%;
   width: 100%;
+  z-index: 1
 }
 .place .image {
   display: table-cell;
     vertical-align: top
 }
 .place .image img {
-  width: 75px
+  width: 75px;
   height: 75px;
   margin-right: 10px;
   margin-top: 7px;
@@ -231,7 +232,7 @@ footer p:nth-of-type(1) {
   position: absolute;
   top: 5px;
   right: 5px;
-  z-index: 1;
+  z-index: 2;
   font-size: 1.5rem;
   color: #999;
   background: none;

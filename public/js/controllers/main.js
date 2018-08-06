@@ -1,18 +1,59 @@
+// Client ID
+// 7eX8uXkCY5vRI0f4RHxcag
+
+// API Key
+// GVOHt9AqIn5o8GUQsl54CUXp13GbHW58f7xCbsyyxwdYH713DdLzokdGdMjXRbr5jsvnL9C_Tt3Bu0RvAGNXR_G4SBSuWABtubWuzbg9uh - ETCfIgtMflK55MmxjW3Yx
+
+// To authenticate API calls with the API Key, set the Authorization HTTP header value as Bearer API_KEY.
+// like spotify
+
+// const url = `https://api.yelp.com/v3/categories/{title}`
+// return $http({
+// 	url: url,
+// 	method: 'get',
+// 	headers: {
+// 		'Authorization': `Bearer GVOHt9AqIn5o8GUQsl54CUXp13GbHW58f7xCbsyyxwdYH713DdLzokdGdMjXRbr5jsvnL9C_Tt3Bu0RvAGNXR_G4SBSuWABtubWuzbg9uh-ETCfIgtMflK55MmxjW3Yx`
+// 	}
+
+//
+
 var Doppleganger = angular.module('Doppleganger', ['ngRoute']);
+var AUTH_HEADER = 'Bearer GVOHt9AqIn5o8GUQsl54CUXp13GbHW58f7xCbsyyxwdYH713DdLzokdGdMjXRbr5jsvnL9C_Tt3Bu0RvAGNXR_G4SBSuWABtubWuzbg9uh - ETCfIgtMflK55MmxjW3Yx' 
 angular.module('Ganger', [])
 
 .factory('SearchYelp', ['$http', '$rootScope',
 	function($http, $rootScope) {
+		
 		return {
 			searchYelp: function(searchterms, location) {
 
-				if($rootScope.geolocation) {
-				return $http.get('/api/yelp/search?term='+searchterms+'&location='+location+'&cll='+$rootScope.geolocation.together+'&limit=10').then(function(result) {
-
-					return result.data;
+				if($rootScope.geolocation.lat) {
+					var url = 'api/yelp/search?term=' + searchterms + '&location=' + location + '&lat=' + $rootScope.geolocation.lat + '&lng=' + $rootScope.geolocation.lon; 
+					return $http({
+						url: url,
+						method: 'get',
+						cache:true,
+						headers: {
+							Authorization: AUTH_HEADER
+						}
+					})
+					.then(function(result) {
+						return result.data;
 				});
 			} else {
-					return $http.get('/api/yelp/search/?term='+searchterms+'&location='+location+'&limit=10').then(function(result) {
+					var url = 'api/yelp/searchNoGeo?term=' + searchterms + '&location=' + location; 
+					return $http({
+						url: url,
+						method: 'get',
+						headers: AUTH_HEADER
+					})
+					.then(function(result) {
+						
+						$rootScope.geolocation.lat = result.data.region.center.latitude;
+						$rootScope.geolocation.lon = result.data.region.center.longitude;
+						$rootScope.geolocation.orig_lat = result.data.region.center.latitude;
+						$rootScope.geolocation.orig_lon = result.data.region.center.longitude;
+						$rootScope.geolocation.together = result.data.region.center.latitude + ', ' + result.data.region.center.longitude;
 
 						return result.data;
 				});
@@ -20,8 +61,7 @@ angular.module('Ganger', [])
 		},
 
 			searchYelpBusiness: function(id) {
-				return $http.get('/api/yelp/business/?name='+id).then(function(result) {
-
+				return $http.get('/api/yelp/business?id='+id).then(function(result) {
 					return result.data;
 			});
 		}
@@ -34,7 +74,7 @@ function($http, $q, CityFind) {
 		checkGeolocation: function() {
 			var deferred = $q.defer();
 			navigator.geolocation.getCurrentPosition(function(data){
-					CityFind.findCity(data.coords.latitude, data.coords.longitude, .05).then(function(location){
+					CityFind.findLatLng(data.coords.latitude, data.coords.longitude, .05).then(function(location){
 						deferred.resolve({lat: data.coords.latitude, lon: data.coords.longitude, city:location.city, state: location.state});
 				})
 			}, function(error){
@@ -49,7 +89,7 @@ function($http, $q, CityFind) {
 .factory('CityFind', ['$http',
 	function($http) {
 	return {
-			findCity : function(lat, lng, ratio) {
+			findLatLng : function(lat, lng, ratio) {
 				var url = "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT+CityName%2C+Region%2C+CountryID+FROM+1B8NpmfiAc414JhWeVZcSqiz4coLc_OeIh7umUDGs+WHERE+Lat+<=" + (lat+ratio) + "+AND+Lat>=" + (lat - ratio) + "+AND+Long<=" + (lng+ratio) + "+AND+Long>=" + (lng -ratio) + "&key=AIzaSyBBcCEirvYGEa2QoGas7w2uaWQweDF2pi0";
 
 				return $http.get(url).then(function(data) {
@@ -60,12 +100,25 @@ function($http, $q, CityFind) {
 						};
 					}
 				});
+			},
+
+			findCity: function(city, state) {
+				var url = "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT+*+FROM+1B8NpmfiAc414JhWeVZcSqiz4coLc_OeIh7umUDGs+WHERE+CityName CONTAINS IGNORING CASE'"+city.toUpperCase()+"'+AND+Region CONTAINS IGNORING CASE'"+state.toUpperCase()+"'&key=AIzaSyBBcCEirvYGEa2QoGas7w2uaWQweDF2pi0";
+
+				return $http.get(url).then(function (data) {
+					if (data.data.rows != null) {
+						return {
+							lat: data.data.rows[0][0],
+							lng: data.data.rows[0][1]
+						};
+					}
+				});
 			}
 		};
 	}])
 
-.controller('getYelpResults', ['$scope','$rootScope','$http','SearchYelp', 'Geolocation', '$q',
-	function($scope, $rootScope, $http, SearchYelp, Geolocation, GeolocationFind, $q) {
+	.controller('getYelpResults', ['$scope', '$rootScope', '$http', 'CityFind','SearchYelp', 'Geolocation', '$q',
+		function ($scope, $rootScope, $http, CityFind, SearchYelp, Geolocation, GeolocationFind, $q) {
 	$scope.places = true;
 	$scope.keywords = false;
 	$scope.placesButtonState ='off';
@@ -121,12 +174,27 @@ function($http, $q, CityFind) {
 		$scope.loading=false;
 	});
 
-	$scope.runSearch = function(searchterms, location) {
 
+
+	$scope.runSearch = function(searchterms, location, isChanging) {
 		$scope.keyword_results = [];
 		$rootScope.markers =[];
 		$scope.noBusinesses=false;
-
+		if(isChanging) {
+			var locationSplit = $scope.whereyouare.split(',');
+			var city = locationSplit[0];
+			var state = locationSplit[1].trim();
+			$rootScope.geolocation = {};
+			CityFind.findCity(city, state).then(function(data) {
+				if(data.lat) {
+					$rootScope.geolocation.orig_lat = data.lat;
+					$rootScope.geolocation.orig_lon = data.lng;
+					$rootScope.geolocation.lat = data.lat;
+					$rootScope.geolocation.lon = data.lng;
+					$rootScope.geolocation.together =data.lat + ', ' + data.lng;
+				}
+			});
+		}
 
 		if((searchterms !== undefined && searchterms !== "") && (location !== undefined && location !== ""))
 		{
@@ -134,21 +202,18 @@ function($http, $q, CityFind) {
 			$scope.loading = true;
 
 			SearchYelp.searchYelp(searchterms, location).then(function(result) {
-
-
 				if(result.businesses.length === 0)
 	 			{
 	 				$scope.noBusinesses=true;
 	 				$scope.searching = false;
 	 			} else {
 	 				//$rootScope.geolocation .together = ""
-
 	 				if($rootScope.geolocation.together === "" || $rootScope.geolocation.together === undefined || $rootScope.geolocation.city_state!==location) {
-						$rootScope.geolocation.together = result.businesses[0].location.coordinate.latitude +', '+result.businesses[0].location.coordinate.longitude;
-						$rootScope.geolocation.lat = result.businesses[0].location.coordinate.latitude;
-						$rootScope.geolocation.lon = result.businesses[0].location.coordinate.longitude;
-						$rootScope.geolocation.orig_lat = result.businesses[0].location.coordinate.latitude;
-						$rootScope.geolocation.orig_lon = result.businesses[0].location.coordinate.longitude;
+						$rootScope.geolocation.lat = result.region.center.latitude;
+						$rootScope.geolocation.lon = result.region.center.longitude;
+						$rootScope.geolocation.orig_lat = result.region.center.latitude;
+						$rootScope.geolocation.orig_lon = result.region.center.longitude;
+						$rootScope.geolocation.together = result.region.center.latitude + ', ' + result.region.center.longitude;
 					}
 
 			 	$scope.keyword_results =result.businesses;
@@ -167,11 +232,28 @@ function($http, $q, CityFind) {
 		}
 	}
 
-	$scope.runBusinessSearch = function(searchterms, location, destination) {
+	$scope.runBusinessSearch = function(searchterms, location, destination, isChanging) {
 
 		$scope.placesyoulike_results = [];
 		$rootScope.markers =[];
 		$scope.noBusinesses=false;
+
+		if (isChanging) {
+			var locationSplit = $scope.whereyouare.split(',');
+			var city = locationSplit[0];
+			var state = locationSplit[1].trim();
+
+			$rootScope.geolocation = {};
+			CityFind.findCity(city, state).then(function (data) {
+				if (data.lat) {
+					$rootScope.geolocation.orig_lat = data.lat;
+					$rootScope.geolocation.orig_lon = data.lng;
+					$rootScope.geolocation.lat = data.lat;
+					$rootScope.geolocation.lon = data.lng;
+					$rootScope.geolocation.together = data.lat + ', ' + data.lng;
+				}
+			});
+		}
 
 		if((searchterms !== undefined && searchterms !== "") && (location !== undefined && location !== "")  && (destination !== undefined && destination !== ""))
 		{
@@ -189,13 +271,12 @@ function($http, $q, CityFind) {
 			 		var id =result.businesses[0].id
 			 		SearchYelp.searchYelpBusiness(id).then(function(data) {
 				 			var categoriesStr = '',
-				 			placesCategoriesStr = '';
+							 placesCategoriesStr = '';
 				 			data.categories.forEach(function(item) {
-				 				categoriesStr+= item[0]+' ';
+				 				categoriesStr+= item.title+' ';
 				 			});
-
 				 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata) {
-
+								 debugger;
 								if(result.businesses.length == 0)
 					 			{
 					 				$scope.noBusinesses=true;
@@ -204,11 +285,11 @@ function($http, $q, CityFind) {
 					 			}	else {
 
 					 				if($rootScope.geolocation.together === "" || $rootScope.geolocation.together === undefined || $rootScope.geolocation.city_state!==destination) {
-										$rootScope.geolocation.together = moredata.businesses[0].location.coordinate.latitude +', '+moredata.businesses[0].location.coordinate.longitude;
-										$rootScope.geolocation.lat = moredata.businesses[0].location.coordinate.latitude;
-										$rootScope.geolocation.lon = moredata.businesses[0].location.coordinate.longitude;
-										$rootScope.geolocation.orig_lat = moredata.businesses[0].location.coordinate.latitude;
-										$rootScope.geolocation.orig_lon = moredata.businesses[0].location.coordinate.longitude;
+											$rootScope.geolocation.lat = result.region.center.latitude;
+											$rootScope.geolocation.lon = result.region.center.longitude;
+											$rootScope.geolocation.orig_lat = result.region.center.latitude;
+											$rootScope.geolocation.orig_lon = result.region.center.longitude;
+											$rootScope.geolocation.together = result.region.center.latitude + ', ' + result.region.center.longitude;
 									}
 
 					 				//$scope.placesyoulike_results = moredata.businesses;
@@ -231,9 +312,12 @@ function($http, $q, CityFind) {
 				 					});
 				 					$scope.markers_holder = $rootScope.markers;//creates a cache of the markers
 					 			}
-					 			//add another check to rank results - basically re run SearchYelp.searchYelp for city of place you like to with the top three results to see if place you like is actually a doppleganger
-
-								$scope.reOrderBusinesses(moredata.businesses, location, destination, placesCategoriesStr, result.businesses[0].name);
+								 //add another check to rank results - basically re run SearchYelp.searchYelp for city of place you like to with the top three results to see if place you like is actually a doppleganger
+								 // TODO Remove this when get reordering working properly
+									$scope.placesyoulike_results = moredata.businesses;
+									$scope.searching = false;
+									$scope.loading = false;
+								//$scope.reOrderBusinesses(moredata.businesses, location, destination, placesCategoriesStr, result.businesses[0].name);
 
 				 			});
 				 		});
@@ -243,6 +327,7 @@ function($http, $q, CityFind) {
 	};
 
 	$scope.reOrderBusinesses = function(arr, destination, location, categoriesStr, orig_searchterms) {
+		
 		if(arr.length>0)
 		{
 			var contain_arr = [],
@@ -250,40 +335,43 @@ function($http, $q, CityFind) {
 			j=0
 			lngth = 0;
 			arr.forEach(function(item) {
-
 				SearchYelp.searchYelp(item.name, location).then(function(result) {
 		 			SearchYelp.searchYelpBusiness(result.businesses[0].id).then(function(data) {
 			 			var categoriesStr = ''
 			 			data.categories.forEach(function(item) {
-			 				categoriesStr+= item[0]+' ';
-			 			})
+			 				categoriesStr+= item.title+', ';
+						 })
+			
 			 			SearchYelp.searchYelp(categoriesStr, destination).then(function(moredata) {
-			 				var i;
-			 				lngth+=moredata.businesses.length
+							 debugger;
+			 				if(moredata) {
+								 var i;
+								lngth+=moredata.businesses.length
 
-			 				for(i=0; i<moredata.businesses.length; i++) {
-			 					j++
-			 					if(moredata.businesses[i].name === orig_searchterms)
-			 					{
-				 					o--
-				 					result.businesses[0].rank=o
-				 					result.businesses[0].showIndivMap = false;
-				 					result.businesses[0].timesShowed = 0;
-				 					arr.splice(0, 0, result.businesses[0]);
+								for(i=0; i<moredata.businesses.length; i++) {
+									j++
+									if(moredata.businesses[i].name === orig_searchterms)
+									{
+										o--
+										result.businesses[0].rank=o
+										result.businesses[0].showIndivMap = false;
+										result.businesses[0].timesShowed = 0;
+										arr.splice(0, 0, result.businesses[0]);
 
 
-			 					}
-			 					if(j==lngth)
-				 					{
-					 					arr = arr.removeDuplicatesArrObj('id', true)
-					 					$scope.placesyoulike_results = arr;
-				 						$scope.searching = false;
-					 					$scope.loading = false;
-			 						}
-			 				}
-			 			});
-			 		});
-			 	})
+									}
+									if(j==lngth)
+										{
+											arr = arr.removeDuplicatesArrObj('id', true)
+											$scope.placesyoulike_results = arr;
+											$scope.searching = false;
+											$scope.loading = false;
+										}
+								}
+							}
+						});
+					});
+				})
 			})
 			//remove Duplicates and keep lower ranked
 			//problem with sorting algorithm in prototypes.js
@@ -386,18 +474,19 @@ $scope.createIndivMap = function(item, index, type) {
 	});
 
 	circle = L.circle([$rootScope.geolocation.orig_lat, $rootScope.geolocation.orig_lon], 125, {
-				    color: '#428bca',
-				    fillColor: '#428bca',
-				    fillOpacity: 0.15
-					})
-	marker_content = '<a href="'+item.url+'" target="_blank">'+item.name+'</a><br>'+item.location.address[0]+'<br>'+item.location.city+'<br><a href="tel://'+item.display_phone+'">'+item.display_phone+'</a><br><img src="'+item.rating_img_url+'" alt="'+item.rating+' stars">',
+		color: '#428bca',
+		fillColor: '#428bca',
+		fillOpacity: 0.15
+	})
 
-	marker = L.marker([item.location.coordinate.latitude, item.location.coordinate.longitude]).bindPopup(marker_content);
+	marker_content = '<a href="'+item.url+'" target="_blank">'+item.name+'</a><br>'+item.location.address1+'<br>'+item.location.city+'<br><a href="tel://'+item.display_phone+'">'+item.display_phone+'</a><br>'+item.rating+' stars',
+
+	marker = L.marker([item.coordinates.latitude, item.coordinates.longitude]).bindPopup(marker_content);
 
 	map.animate=true;
 	map._zoom = 13	;
 	map.scrollWheelZoom.disable();
-	map.panTo([item.location.coordinate.latitude, item.location.coordinate.longitude]);
+	map.panTo([item.coordinates.latitude, item.coordinates.longitude]);
  	map.zoomControl.options.position='topright';
 	if($scope.geolocationUsed){
 		circle.addTo(map);
@@ -472,9 +561,11 @@ $scope.createIndivMap = function(item, index, type) {
       		markers =[];
       		var i =0
       		$rootScope.markers.forEach(function(marker) {
-      		i++
-					marker_content='<a href="'+marker.url+'" target="_blank">'+marker.name+'</a><br>'+marker.location.address[0]+'<br>'+marker.location.city+'<br><a href="tel://'+marker.display_phone+'">'+marker.display_phone+'</a><br><img src="'+marker.rating_img_url+'" alt="'+marker.rating+' stars">';
-					markers.push(L.marker([marker.location.coordinate.latitude, marker.location.coordinate.longitude]).bindPopup(marker_content));
+					i++
+					
+					marker_content='<a href="'+marker.url+'" target="_blank">'+marker.name+'</a><br>'+marker.location.address1+'<br>'+marker.location.city+'<br><a href="tel://'+marker.display_phone+'">'+marker.display_phone+'</a><br>'+marker.rating+' stars';
+					markers.push(L.marker([marker.coordinates.latitude, marker.coordinates.longitude]).bindPopup(marker_content));
+					//[item.location.coordinate.latitude, item.location.coordinate.longitude
 					});
        	}
 
