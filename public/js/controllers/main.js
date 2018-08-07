@@ -102,7 +102,7 @@ function($http, $q, CityFind) {
 			},
 
 			findCity: function(city, state) {
-				var url = "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT+*+FROM+1B8NpmfiAc414JhWeVZcSqiz4coLc_OeIh7umUDGs+WHERE+CityName CONTAINS IGNORING CASE'"+city.toUpperCase()+"'+AND+Region CONTAINS IGNORING CASE'"+state.toUpperCase()+"'&key=AIzaSyBBcCEirvYGEa2QoGas7w2uaWQweDF2pi0";
+				var url = "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT+Lat,Long+FROM+1B8NpmfiAc414JhWeVZcSqiz4coLc_OeIh7umUDGs+WHERE+CityName CONTAINS IGNORING CASE'"+city.toUpperCase()+"'+AND+Region CONTAINS IGNORING CASE'"+state.toUpperCase()+"'&key=AIzaSyBBcCEirvYGEa2QoGas7w2uaWQweDF2pi0";
 
 				return $http.get(url).then(function (data) {
 					if (data.data.rows != null) {
