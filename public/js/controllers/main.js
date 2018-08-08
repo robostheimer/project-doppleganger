@@ -47,12 +47,6 @@ angular.module('Ganger', [])
 						headers: AUTH_HEADER
 					})
 					.then(function(result) {
-						
-						$rootScope.geolocation.lat = result.data.region.center.latitude;
-						$rootScope.geolocation.lon = result.data.region.center.longitude;
-						$rootScope.geolocation.orig_lat = result.data.region.center.latitude;
-						$rootScope.geolocation.orig_lon = result.data.region.center.longitude;
-						$rootScope.geolocation.together = result.data.region.center.latitude + ', ' + result.data.region.center.longitude;
 						return result.data;
 				});
 			}
@@ -173,6 +167,7 @@ function($http, $q, CityFind) {
 	});
 
 	$scope.runSearch = function(searchterms, location, isChanging) {
+		console.log(searchterms)
 		$scope.keyword_results = [];
 		$rootScope.markers =[];
 		$scope.noBusinesses=false;
@@ -189,7 +184,6 @@ function($http, $q, CityFind) {
 					$rootScope.geolocation.lon = data.lng;
 					$rootScope.geolocation.together =data.lat + ', ' + data.lng;
 				}
-
 				$scope.searchYelp(searchterms, location, $rootScope.geolocation);
 			});
 		} else {
@@ -216,6 +210,7 @@ function($http, $q, CityFind) {
 					$rootScope.geolocation.lon = data.lng;
 					$rootScope.geolocation.together = data.lat + ', ' + data.lng;
 				}
+
 				$scope.doubleSearchYelp(searchterms, location, destination, $rootScope.geolocation);
 			});
 		} else {
@@ -254,7 +249,7 @@ function($http, $q, CityFind) {
 		if ((searchterms !== undefined && searchterms !== "") && (location !== undefined && location !== "") && (destination !== undefined && destination !== "")) {
 			$scope.searching = true;
 			$scope.loading = true;
-			SearchYelp.searchYelp(searchterms, location, geolocation).then(function (result) {
+			SearchYelp.searchYelp(searchterms, location).then(function (result) {
 
 				if (result.businesses.length === 0) {
 					$scope.noBusinesses = true;
@@ -269,7 +264,7 @@ function($http, $q, CityFind) {
 						data.categories.forEach(function (item) {
 							categoriesStr += item.title + ' ';
 						});
-						SearchYelp.searchYelp(categoriesStr, destination).then(function (moredata) {
+						SearchYelp.searchYelp(categoriesStr, destination, geolocation).then(function (moredata) {
 							if (result.businesses.length == 0) {
 								$scope.noBusinesses = true;
 								$scope.searching = false;
@@ -300,10 +295,10 @@ function($http, $q, CityFind) {
 							}
 							//add another check to rank results - basically re run SearchYelp.searchYelp for city of place you like to with the top three results to see if place you like is actually a doppleganger
 							// TODO Remove this when get reordering working properly
-							$scope.placesyoulike_results = moredata.businesses;
-							$scope.searching = false;
-							$scope.loading = false;
-							//$scope.reOrderBusinesses(moredata.businesses, location, destination, placesCategoriesStr, result.businesses[0].name);
+							// $scope.placesyoulike_results = moredata.businesses;
+							// $scope.searching = false;
+							// $scope.loading = false;
+							$scope.reOrderBusinesses(moredata.businesses, location, destination, placesCategoriesStr, result.businesses[0].name);
 
 						});
 					});
