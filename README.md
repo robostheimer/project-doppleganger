@@ -4,4 +4,4 @@ Doppelgänger is a location-based place discovery app. It relies on the Yelp Api
 
 Built with AngularJS
 
-Viewable here: http://ec2-54-244-63-178.us-west-2.compute.amazonaws.com:8080/
+Viewable here: https://ec2-34-217-212-79.us-west-2.compute.amazonaws.com:8080/
