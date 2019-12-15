@@ -13,7 +13,7 @@
     "body-parser": "~1.0.0",
     "connect-flash": "~0.1.1",
     "cookie-parser": "~1.0.0",
-    "ejs": "~0.8.5",
+    "ejs": "~3.0.1",
     "express": "~4.0.0",
     "express-session": "~1.0.0",
     "jade": "~0.31.2",
