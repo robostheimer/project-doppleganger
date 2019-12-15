@@ -1,3 +1,1 @@
-angular.module('Doppleganger', ['Ganger']);
-
-  
+angular.module("Doppleganger", ["Ganger"]);
