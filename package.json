@@ -20,7 +20,7 @@
     "leaflet": "~0.7.7",
     "method-override": "~2.1.2",
     "mongoose": "~3.8.1",
-    "morgan": "~1.2.2",
+    "morgan": "~1.9.1",
     "passport": "~0.1.17",
     "passport-facebook": "~1.0.2",
     "passport-google-oauth": "~0.1.5",
