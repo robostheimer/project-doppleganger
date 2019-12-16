@@ -137,13 +137,14 @@ angular
         },
 
         findCity: function(city, state) {
-          var url = `https://api.musicwhereyour.com/geolocationMultiple/and~CityName:
-            ${city.toUpperCase()}`;
+          var url = `https://api.musicwhereyour.com/geolocationMultiple/and~CityName:${city
+            .trim()
+            .toUpperCase()}`;
           return $http.get(url).then(function(data) {
             if (data.data != null) {
               return {
-                lat: data.data[0].Lat,
-                lng: data.data[0].Lng
+                lat: data.data[0].Lat.$numberDecimal,
+                lng: data.data[0].Lng.$numberDecimal
               };
             }
           });
